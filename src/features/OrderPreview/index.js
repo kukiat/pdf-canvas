@@ -20,9 +20,11 @@ class OrderPreview extends React.Component {
   drawCanvas = () => {
     const { orderList } = this.props
     orderList.forEach(d => {
+      const width = 460
+      const height = 400
       const ctx = this.canvasRef[d.id].getContext('2d')
-      ctx.canvas.height = 400
-      ctx.canvas.width = 460
+      ctx.canvas.width = width
+      ctx.canvas.height = height
       this.drawBorder(ctx)
 
       this.drawLine(ctx, 20, 100, 440, 100)
@@ -58,10 +60,16 @@ class OrderPreview extends React.Component {
   }
 
   drawBorder = (ctx) => {
-    ctx.filStyle = '#020202'
-    ctx.lineWidth = 1
-    ctx.strokeRect(0, 0, 460, 400)
-    ctx.strokeStyle = "#020202"
+    const border = 10
+    this.drawLine(ctx, 5, 0 + border, 5, 400 - border)
+    this.drawLine(ctx, 0 + border, 395, 460 - border, 395)
+    this.drawLine(ctx, 455, 400 - border, 455, 0 + border)
+    this.drawLine(ctx, 460 - border, 5, 0 + border, 5)
+
+    // ctx.filStyle = '#020202'
+    // ctx.lineWidth = 1
+    // ctx.strokeRect(0, 0, 460, 400)
+    // ctx.strokeStyle = "#020202"
   }
 
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
@@ -84,13 +92,9 @@ class OrderPreview extends React.Component {
       <div className="order-list-container">
         {
           orderList.reverse().map((d) => (
-            <div style={{ position: 'relative', padding: '10px' }} key={d.id}>
-              <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 30, left: 130 }} />
-              <canvas
-                ref={node => this.canvasRef[d.id] = node}
-              // width={400}
-              // height={400}
-              />
+            <div style={{ position: 'relative', padding: '5px' }} key={d.id}>
+              <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 20, left: 130 }} />
+              <canvas ref={node => this.canvasRef[d.id] = node} />
             </div>
           ))
         }
