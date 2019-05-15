@@ -1,0 +1,26 @@
+.order-list-container {
+  display: flex;
+
+  .ant-card-bordered {
+    margin: 5px
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  h4 {
+    font-weight: normal;
+  }
+
+  .text-group {
+    font-size: 16px;
+    display: flex;
+
+    p {
+      margin-left: 5px;
+    }
+  }
+
+}

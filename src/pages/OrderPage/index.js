@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { orderList } from './data'
-import { OrderPreview } from '../../features'
+import { Button } from 'antd'
+import { OrderPreview, OrderList } from '../../features'
+import { ModalWrapper } from '../../commons'
+import withModal from '../../commons/hoc/withModal'
+import './index.scss'
 
 class OrderPage extends Component {
   constructor(props) {
@@ -10,13 +14,46 @@ class OrderPage extends Component {
     }
   }
 
+  onCreateOrder = () => {
+    const { orderList } = this.state
+    this.setState({
+      orderList: orderList.concat({
+        id: String(this.state.orderList.length),
+        barcode: '01234567890128-IT',
+        orderName: 'TX12005TH',
+        orderId: 'OR014A',
+        reciver: {
+          name: 'นายกู้เกียรติ วังทะพันธ์',
+          phoneNumber: '091-108-5517',
+          address: "16/176 หมู่.8 ถ.พิบูลสงคราม จ.นนทบุรี 11000",
+        },
+        sender: {
+          name: 'นายอดัม หำใหญ่',
+          phoneNumber: '091-108-5518',
+          address: "16/176 หมู่.8 อ.เมือง จ.นนทบุรี 11000",
+        },
+        date: '16/01/1996 13:31',
+        type: 'Envelop',
+        weight: '0.07 g',
+        eg: 'wdadwadssdw wdadwawdawd'
+      })
+    })
+  }
+
   render() {
+    const { orderList } = this.state
+    const { modals } = this.props
     return (
-      <div>
+      <div className='order-page-container'>
         <OrderPreview orderList={orderList} />
+        {/* <div className='button-set'>
+          <Button type="primary" onClick={this.onCreateOrder}>Add Order</Button>
+          <Button type="primary" onClick={modals.previewOrder.onOpenModal}>Preview</Button>
+        </div>
+        <OrderList orderList={orderList} /> */}
       </div>
     )
   }
 }
 
-export default OrderPage
+export default withModal()(OrderPage)

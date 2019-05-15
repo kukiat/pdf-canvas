@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
 import Modal from 'react-modal'
 import './index.scss'
+import "antd/dist/antd.css"
 import Routes from './Routes'
 import * as serviceWorker from './serviceWorker'
 

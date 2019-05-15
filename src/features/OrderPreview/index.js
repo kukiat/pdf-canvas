@@ -1,5 +1,6 @@
 import React from 'react';
 import JsBarcode from 'jsbarcode'
+import { ModalWrapper } from '../../commons'
 import './index.scss'
 
 class OrderPreview extends React.Component {

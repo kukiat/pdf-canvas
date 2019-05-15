@@ -3,28 +3,13 @@ import Modal from 'react-modal';
 import styles from '../modalStyle'
 
 class ModalWrapper extends Component {
-  constructor() {
-    super();
-    this.state = {
-      modalIsOpen: false
-    };
-  }
-
-  openModal = () => {
-    this.setState({ modalIsOpen: true });
-  }
-
-  closeModal = () => {
-    this.setState({ modalIsOpen: false });
-  }
-
   render() {
+    const { isOpen, onCloseModal } = this.props
     return (
       <Modal
-        isOpen={this.state.modalIsOpen}
-        onRequestClose={this.closeModal}
+        isOpen={isOpen}
+        onRequestClose={onCloseModal}
         style={styles}
-        contentLabel="Example Modal"
       >
         {this.props.children}
       </Modal>
