@@ -21,31 +21,33 @@ class OrderPreview extends React.Component {
     const { orderList } = this.props
     orderList.forEach(d => {
       const ctx = this.canvasRef[d.id].getContext('2d')
+      ctx.canvas.height = 400
+      ctx.canvas.width = 460
       this.drawBorder(ctx)
 
-      this.drawLine(ctx, 40, 100, 420, 100)
-      this.drawLine(ctx, 280, 100, 280, 160)
-      this.drawLine(ctx, 40, 160, 420, 160)
+      this.drawLine(ctx, 20, 100, 440, 100)
+      this.drawLine(ctx, 300, 100, 300, 160)
+      this.drawLine(ctx, 20, 160, 440, 160)
 
       this.drawText(ctx, d.orderName, 60, 143, 30, 'bold')
-      this.drawText(ctx, d.orderId, 310, 125, 20, 'bold')
-      this.drawText(ctx, '1 of 1', 330, 150, 15)
+      this.drawText(ctx, d.orderId, 330, 125, 20, 'bold')
+      this.drawText(ctx, '1 of 1', 350, 150, 15)
 
-      this.drawText(ctx, `ผู้รับ: ${d.reciver.name} T: ${d.reciver.phoneNumber}`, 40, 190, 14, 'bold')
-      this.drawText(ctx, `${d.reciver.address}`, 40, 210, 14, 'bold')
+      this.drawText(ctx, `ผู้รับ: ${d.reciver.name} T: ${d.reciver.phoneNumber}`, 20, 190, 14, 'bold')
+      this.drawText(ctx, `${d.reciver.address}`, 20, 210, 14, 'bold')
 
-      this.drawText(ctx, `ผู้ส่ง: ${d.sender.name} T: ${d.sender.phoneNumber}`, 40, 240, 13)
-      this.drawText(ctx, `${d.sender.address}`, 40, 260, 13)
+      this.drawText(ctx, `ผู้ส่ง: ${d.sender.name} T: ${d.sender.phoneNumber}`, 20, 240, 13)
+      this.drawText(ctx, `${d.sender.address}`, 20, 260, 13)
 
-      this.drawText(ctx, `${d.date}, (${d.type}), ${d.weight}`, 40, 300, 13)
+      this.drawText(ctx, `${d.date}, (${d.type}), ${d.weight}`, 20, 300, 13)
 
-      this.drawText(ctx, `หมายเหตุ: ${d.eg}`, 40, 330, 13)
+      this.drawText(ctx, `หมายเหตุ: ${d.eg}`, 20, 330, 13)
 
       JsBarcode(`#barcode${d.id}`, d.barcode, {
         format: "CODE128B",
         lineColor: "#000",
         width: 1,
-        height: 30,
+        height: 35,
         displayValue: true,
         text: d.barcode,
         fontSize: 12,
@@ -56,10 +58,10 @@ class OrderPreview extends React.Component {
   }
 
   drawBorder = (ctx) => {
-    ctx.filStyle = '#DFE1E5'
-    ctx.lineWidth = 0.5
-    ctx.strokeRect(20, 20, 420, 360)
-    ctx.strokeStyle = "#000"
+    ctx.filStyle = '#020202'
+    ctx.lineWidth = 1
+    ctx.strokeRect(0, 0, 460, 400)
+    ctx.strokeStyle = "#020202"
   }
 
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
@@ -70,7 +72,7 @@ class OrderPreview extends React.Component {
   drawLine = (ctx, moveToX, moveToY, lineToX, lineToY) => {
     ctx.beginPath()
     ctx.strokeStyle = "#000"
-    ctx.lineWidth = 1.5
+    ctx.lineWidth = 1
     ctx.moveTo(moveToX, moveToY)
     ctx.lineTo(lineToX, lineToY)
     ctx.stroke()
@@ -82,12 +84,12 @@ class OrderPreview extends React.Component {
       <div className="order-list-container">
         {
           orderList.reverse().map((d) => (
-            <div style={{ position: 'relative' }} key={d.id}>
-              <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 30, left: 110 }} />
+            <div style={{ position: 'relative', padding: '10px' }} key={d.id}>
+              <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 30, left: 130 }} />
               <canvas
                 ref={node => this.canvasRef[d.id] = node}
-                width={460}
-                height={400}
+              // width={400}
+              // height={400}
               />
             </div>
           ))
