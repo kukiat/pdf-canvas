@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import JsBarcode from 'jsbarcode'
 import { ModalWrapper } from '../../commons'
 import './index.scss'
@@ -10,12 +10,18 @@ class OrderPreview extends React.Component {
   }
 
   componentDidMount() {
-    this.props.orderList.forEach(d => {
+    this.drawCanvas()
+  }
+
+  componentDidUpdate() {
+    this.drawCanvas()
+  }
+
+  drawCanvas = () => {
+    const { orderList } = this.props
+    orderList.forEach(d => {
       const ctx = this.canvasRef[d.id].getContext('2d')
-      ctx.filStyle = '#DFE1E5';
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = "#000";
-      ctx.strokeRect(20, 20, 420, 360)
+      this.drawBorder(ctx)
 
       this.drawLine(ctx, 40, 100, 420, 100)
       this.drawLine(ctx, 280, 100, 280, 160)
@@ -49,6 +55,13 @@ class OrderPreview extends React.Component {
     })
   }
 
+  drawBorder = (ctx) => {
+    ctx.filStyle = '#DFE1E5'
+    ctx.lineWidth = 0.5
+    ctx.strokeRect(20, 20, 420, 360)
+    ctx.strokeStyle = "#000"
+  }
+
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
     ctx.font = `${weight} ${size}px verdana, sans-serif`
     ctx.fillText(label, x, y)
@@ -68,8 +81,8 @@ class OrderPreview extends React.Component {
     return (
       <div className="order-list-container">
         {
-          orderList.map((d) => (
-            <div style={{ position: 'relative' }}>
+          orderList.reverse().map((d) => (
+            <div style={{ position: 'relative' }} key={d.id}>
               <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 30, left: 110 }} />
               <canvas
                 ref={node => this.canvasRef[d.id] = node}

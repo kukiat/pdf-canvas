@@ -19,7 +19,7 @@ class OrderPage extends Component {
     this.setState({
       orderList: orderList.concat({
         id: String(this.state.orderList.length),
-        barcode: '01234567890128-IT',
+        barcode: '01231117890128-IT',
         orderName: 'TX12005TH',
         orderId: 'OR014A',
         reciver: {
@@ -45,12 +45,12 @@ class OrderPage extends Component {
     const { modals } = this.props
     return (
       <div className='order-page-container'>
-        <OrderPreview orderList={orderList} />
-        {/* <div className='button-set'>
+        <div className='button-set'>
           <Button type="primary" onClick={this.onCreateOrder}>Add Order</Button>
           <Button type="primary" onClick={modals.previewOrder.onOpenModal}>Preview</Button>
         </div>
-        <OrderList orderList={orderList} /> */}
+        <OrderPreview orderList={orderList} />
+        {/* <OrderList orderList={orderList} /> */}
       </div>
     )
   }
