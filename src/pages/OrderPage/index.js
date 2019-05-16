@@ -46,11 +46,10 @@ class OrderPage extends Component {
     return (
       <div className='order-page-container'>
         <div className='button-set'>
-          <Button type="primary" onClick={this.onCreateOrder}>Add Order</Button>
-          <Button type="primary" onClick={modals.previewOrder.onOpenModal}>Preview</Button>
+          <Button type="primary" onClick={this.onCreateOrder}>เพิ่ม</Button>
+          <Button type="primary" >Print</Button>
         </div>
         <OrderPreview orderList={orderList} />
-        {/* <OrderList orderList={orderList} /> */}
       </div>
     )
   }

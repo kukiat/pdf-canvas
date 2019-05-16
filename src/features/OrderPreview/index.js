@@ -3,6 +3,8 @@ import JsBarcode from 'jsbarcode'
 import { ModalWrapper } from '../../commons'
 import './index.scss'
 
+const WIDTH = 460
+const HEIGHT = 400
 class OrderPreview extends React.Component {
   constructor(props) {
     super(props)
@@ -20,12 +22,10 @@ class OrderPreview extends React.Component {
   drawCanvas = () => {
     const { orderList } = this.props
     orderList.forEach(d => {
-      const width = 460
-      const height = 400
       const ctx = this.canvasRef[d.id].getContext('2d')
-      ctx.canvas.width = width
-      ctx.canvas.height = height
-      this.drawBorder(ctx)
+      ctx.canvas.width = WIDTH
+      ctx.canvas.height = HEIGHT
+      this.drawRact(ctx, WIDTH, HEIGHT, 10)
 
       this.drawLine(ctx, 20, 100, 440, 100)
       this.drawLine(ctx, 300, 100, 300, 160)
@@ -48,8 +48,8 @@ class OrderPreview extends React.Component {
       JsBarcode(`#barcode${d.id}`, d.barcode, {
         format: "CODE128B",
         lineColor: "#000",
-        width: 1,
-        height: 35,
+        width: 1.5,
+        height: 40,
         displayValue: true,
         text: d.barcode,
         fontSize: 12,
@@ -59,17 +59,11 @@ class OrderPreview extends React.Component {
     })
   }
 
-  drawBorder = (ctx) => {
-    const border = 10
-    this.drawLine(ctx, 5, 0 + border, 5, 400 - border)
-    this.drawLine(ctx, 0 + border, 395, 460 - border, 395)
-    this.drawLine(ctx, 455, 400 - border, 455, 0 + border)
-    this.drawLine(ctx, 460 - border, 5, 0 + border, 5)
-
-    // ctx.filStyle = '#020202'
-    // ctx.lineWidth = 1
-    // ctx.strokeRect(0, 0, 460, 400)
-    // ctx.strokeStyle = "#020202"
+  drawRact = (ctx, width, height, borderRadius) => {
+    this.drawLine(ctx, 5, 0 + borderRadius, 5, height - borderRadius)
+    this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
+    this.drawLine(ctx, 455, height - borderRadius, 455, 0 + borderRadius)
+    this.drawLine(ctx, width - borderRadius, 5, 0 + borderRadius, 5)
   }
 
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
@@ -91,9 +85,15 @@ class OrderPreview extends React.Component {
     return (
       <div className="order-list-container">
         {
-          orderList.reverse().map((d) => (
-            <div style={{ position: 'relative', padding: '5px' }} key={d.id}>
-              <canvas id={`barcode${d.id}`} style={{ position: 'absolute', top: 20, left: 130 }} />
+          orderList.map((d) => (
+            <div
+              style={{ position: 'relative', padding: '5px' }}
+              key={d.id}
+            >
+              <canvas
+                id={`barcode${d.id}`}
+                style={{ position: 'absolute', top: 20, left: 60 }}
+              />
               <canvas ref={node => this.canvasRef[d.id] = node} />
             </div>
           ))
