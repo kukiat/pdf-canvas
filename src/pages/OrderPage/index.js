@@ -42,7 +42,6 @@ class OrderPage extends Component {
 
   render() {
     const { orderList } = this.state
-    const { modals } = this.props
     return (
       <div className='order-page-container'>
         <div className='button-set'>
