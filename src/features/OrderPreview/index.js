@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import JsBarcode from 'jsbarcode'
 
-const WIDTH = 330
-const HEIGHT = 300
-const PADDING = 5
+function getHeightText(height) {
+  return height - (0.2 * height)
+}
+
+const WIDTH = 370
+const HEIGHT = 400
+const PADDING = 10
 class OrderPreview extends Component {
   constructor(props) {
     super(props)
@@ -11,7 +15,6 @@ class OrderPreview extends Component {
   }
 
   componentDidMount() {
-    console.log(this.canvasRef)
     this.drawCanvas()
   }
 
@@ -21,37 +24,59 @@ class OrderPreview extends Component {
 
   drawCanvas = () => {
     const order = this.props.orderList[0]
-    const leftPosition = 20 + PADDING
-    const rightPosition = WIDTH - 20 - PADDING
-
+    const startX = 0
+    const startY = 0
+    const endX = 0
+    const endY = 0
     const ctx = this.canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
+    const localPadding = 10
+    // this.drawRact(ctx, WIDTH, HEIGHT, 10)
+    this.drawLine(ctx, PADDING, PADDING, WIDTH - PADDING, PADDING)
+    this.drawLine(ctx, PADDING, PADDING, PADDING, 500)
+    this.drawLine(ctx, WIDTH - PADDING, PADDING, WIDTH - PADDING, 500)
+    const barcodeAreaHeight = 100
+    const headerAreaHeigth = 60
+    const offsetYSepLine = 0.7 * (WIDTH - (localPadding * 2) - (PADDING * 2))
+    this.drawLine(ctx, PADDING + localPadding, barcodeAreaHeight + PADDING, WIDTH - localPadding - PADDING, barcodeAreaHeight + PADDING)
+    this.drawLine(ctx, PADDING + localPadding, barcodeAreaHeight + headerAreaHeigth + PADDING, WIDTH - localPadding - PADDING, barcodeAreaHeight + headerAreaHeigth + PADDING)
+    this.drawLine(ctx, offsetYSepLine, barcodeAreaHeight + PADDING, offsetYSepLine, barcodeAreaHeight + PADDING + headerAreaHeigth)
 
-    this.drawLine(ctx, leftPosition, 100, rightPosition, 100)
-    this.drawLine(ctx, 300, 100, 300, 160)
-    this.drawLine(ctx, leftPosition, 160, rightPosition, 160)
+    const fontSizeOrderName = 22
+    const heightText = getHeightText(fontSizeOrderName)
+    const offsetYOrderName = PADDING + barcodeAreaHeight + heightText + ((headerAreaHeigth - heightText) / 2)
+    ctx.font = `bold ${fontSizeOrderName}px verdana, sans-serif`
+    const offsetXOrderName = ((offsetYSepLine - ctx.measureText(order.orderName).width) / 2)
+    this.drawText(ctx, order.orderName, offsetXOrderName + PADDING, offsetYOrderName, fontSizeOrderName, 'bold')
 
-    this.drawText(ctx, order.orderName, 60, 143, 30, 'bold')
-    this.drawText(ctx, order.orderId, 330, 125, 20, 'bold')
-    this.drawText(ctx, '1 of 1', 350, 150, 15)
+    // this.drawText(ctx, order.orderId, 330, 125, 20, 'bold')
+    // this.drawText(ctx, '1 of 1', 350, 150, 15)
 
-    const beginX = leftPosition
-    const beginY = 190
-    this.drawGroupText(ctx, order, beginX, beginY)
+    // this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
+    // this.drawLine(ctx, 455, height - borderRadius, 455, 0 + borderRadius)
+    // this.drawLine(ctx, width - borderRadius, 5, 0 + borderRadius, 5)
+    // this.drawLine(ctx, leftPosition, 100, rightPosition, 100)
+    // this.drawLine(ctx, 300, 100, 300, 160)
+    // this.drawLine(ctx, leftPosition, 160, rightPosition, 160)
 
-    JsBarcode(`#barcode`, order.barcode, {
-      format: "CODE128B",
-      lineColor: "#000",
-      width: 1,
-      height: 40,
-      displayValue: true,
-      text: order.barcode,
-      fontSize: 12,
-      font: 'verdana, sans-serif',
-      textMargin: 5
-    })
-    this.drawRact(ctx, WIDTH, HEIGHT, 10)
+
+
+    // const beginX = leftPosition
+    // const beginY = 190
+    // this.drawGroupText(ctx, order, beginX, beginY)
+
+    // JsBarcode(`#barcode`, order.barcode, {
+    //   format: "CODE128B",
+    //   lineColor: "#000",
+    //   width: 1,
+    //   height: 40,
+    //   displayValue: true,
+    //   text: order.barcode,
+    //   fontSize: 12,
+    //   font: 'verdana, sans-serif',
+    //   textMargin: 5
+    // })
   }
 
   drawGroupText = (ctx, order, beginX, beginY) => {
@@ -70,7 +95,7 @@ class OrderPreview extends Component {
 
   drawRact = (ctx, width, height, borderRadius) => {
     this.drawLine(ctx, 5, 0 + borderRadius, 5, height - borderRadius)
-    this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
+    // this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
     this.drawLine(ctx, 455, height - borderRadius, 455, 0 + borderRadius)
     this.drawLine(ctx, width - borderRadius, 5, 0 + borderRadius, 5)
   }
@@ -94,7 +119,6 @@ class OrderPreview extends Component {
       <div
         style={{
           position: 'relative',
-          padding: `${PADDING}px`
         }}
       >
         <canvas
