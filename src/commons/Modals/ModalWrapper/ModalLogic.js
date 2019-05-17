@@ -5,11 +5,11 @@ class ModalLogic extends Component {
     isOpen: false
   }
 
-  onOpenModal = () => {
+  onOpen = () => {
     this.setState({ isOpen: true });
   }
 
-  onCLoseModal = () => {
+  onClose = () => {
     this.setState({ isOpen: false });
   }
 
@@ -18,8 +18,8 @@ class ModalLogic extends Component {
     const { isOpen } = this.state
     return children({
       isOpen,
-      onOpenModal: this.onOpenModal,
-      onCLoseModal: this.onCLoseModal,
+      onOpen: this.onOpen,
+      onClose: this.onClose,
     })
   }
 }

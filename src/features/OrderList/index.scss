@@ -1,5 +1,6 @@
 .order-list-container {
   display: flex;
+  flex-wrap: wrap;
 
   .ant-card-bordered {
     margin: 5px
