@@ -36,7 +36,7 @@ class OrderPage extends Component {
         date: '16/01/1996 13:31',
         type: 'Envelop',
         weight: '0.07 g',
-        eg: 'wdadwadssdw wdadwawdawd'
+        eg: 'wdadwadssdw wdadwawdawd wddddddddddddddawdad, wdadddddddddddddddddddddddawdawd, wdddddddddddddawdawd'
       })
     })
   }

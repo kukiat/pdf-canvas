@@ -10,7 +10,7 @@ const WIDTH = 760
 const HEIGHT = 900
 const PADDING = 10
 const GAP = 10
-const FONT_FAMILY = 'verdana, sans-serif'
+const FONT_FAMILY = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
 
 const startX = 0 + PADDING
 const startY = 0 + PADDING
@@ -19,6 +19,7 @@ const headerAreaHeigth = 60
 
 const paddingContentHorizontal = 10
 const paddingContentVertical = 15
+
 class OrderPreview extends Component {
   constructor(props) {
     super(props)
@@ -34,7 +35,6 @@ class OrderPreview extends Component {
     const padding = 10
     const width = ((WIDTH - (PADDING * 2) - GAP) / 2)
 
-    console.log(`(${startX},${startY})`)
     const ctx = this.canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
@@ -122,42 +122,100 @@ class OrderPreview extends Component {
   }
 
   drawContent(ctx, order) {
+    const qrcodeAreaWidth = 88
     const startXContent = startX + paddingContentHorizontal
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
+    let heightContent = startYContent
 
-    const texts = [`ผู้รับ: ${order.reciver.name}`, `T: ${order.reciver.phoneNumber}`]
+    const reciverNameText = [`ผู้รับ: ${order.reciver.name}`, `T: ${order.reciver.phoneNumber}`]
     const reciverNameSizeText = 14
     const reciverNameFit = 20
-    const reciverNameDetails = this.getDetailsTextGroup(ctx, texts, reciverNameSizeText, 'bold', reciverNameFit)
+    const reciverNameDetails = this.getDetailsTextGroup(ctx, reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
+    heightContent = heightContent + paddingContentVertical
     this.drawTextGroup(ctx, {
       ...reciverNameDetails,
       fit: reciverNameFit,
       x: startXContent,
-      y: startYContent + paddingContentVertical,
+      y: heightContent,
       size: reciverNameSizeText,
+      weight: 'bold'
+    })
+
+    const reciverAddressText = order.reciver.address.split(' ')
+    const reciverAddressSizeText = 14
+    const reciverAddressFit = 18
+    const reciverAddressDetails = this.getDetailsTextGroup(ctx, reciverAddressText, reciverAddressSizeText, 'bold', reciverAddressFit)
+    heightContent += reciverNameDetails.height + 10
+    this.drawTextGroup(ctx, {
+      ...reciverAddressDetails,
+      fit: reciverAddressFit,
+      x: startXContent,
+      y: heightContent,
+      size: reciverAddressSizeText,
+      weight: 'bold'
+    })
+
+    this.drawLine(ctx, 277, 250, 277, 400)
+    const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
+    const senderNameSizeText = 12
+    const senderNameFit = 16
+    const senderNameDetails = this.getDetailsTextGroup(ctx, senderNameText, senderNameSizeText, 'normal', senderNameFit, qrcodeAreaWidth)
+    heightContent += reciverAddressDetails.height + 20
+    this.drawTextGroup(ctx, {
+      ...senderNameDetails,
+      fit: senderNameFit,
+      x: startXContent,
+      y: heightContent,
+      size: senderNameSizeText,
+    })
+
+    const senderAddressText = order.sender.address.split(' ')
+    const senderAddressSizeText = 12
+    const senderAddressFit = 16
+    const senderAddressDetails = this.getDetailsTextGroup(ctx, senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, qrcodeAreaWidth)
+    heightContent += senderNameDetails.height + 10
+    this.drawTextGroup(ctx, {
+      ...senderAddressDetails,
+      fit: senderAddressFit,
+      x: startXContent,
+      y: heightContent,
+      size: senderAddressSizeText,
+    })
+
+    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
+    const orderDetailsTextSize = 12
+    const orderDetailsFit = 16
+    const orderDetails = this.getDetailsTextGroup(ctx, orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
+    heightContent += senderAddressDetails.height + 20
+    this.drawTextGroup(ctx, {
+      ...orderDetails,
+      fit: orderDetailsFit,
+      x: startXContent,
+      y: heightContent,
+      size: orderDetailsTextSize,
     })
   }
 
-  getDetailsTextGroup(ctx, textArr, size, weight, fit = 0) {
-    const maxWidth = ((WIDTH - (PADDING * 2) - GAP) / 2) - (paddingContentHorizontal * 2)
+  getDetailsTextGroup(ctx, textArr, size, weight, fit = 0, areaWidth = 0) {
+    const maxWidth = ((WIDTH - (PADDING * 2) - GAP) / 2) - (paddingContentHorizontal * 2) - areaWidth
+
     let widthTemp = 0
     let totalText = []
     let totalHeight = 0
     textArr.forEach((text) => {
-      ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
       const { width, height } = this.getWidthHeightText(ctx, size, text, weight)
       widthTemp += width
 
       if (widthTemp > maxWidth) {
-        totalHeight = height + fit
+        totalHeight += fit
         totalText.push(text)
-        widthTemp -= maxWidth
+        widthTemp = 0
       } else {
         if (!totalText.length) {
           totalHeight += height
           totalText.push(text)
         } else {
-          totalText[totalText.length - 1] = totalText[totalText.length - 1] + ' ' + text
+          totalText[totalText.length - 1] += text
         }
       }
     })
@@ -169,21 +227,20 @@ class OrderPreview extends Component {
     }
   }
 
-  drawTextGroup(ctx, { fit, x, y, totalText, size }) {
-    totalText.forEach((text, index) => {
-      const { height } = this.getWidthHeightText(ctx, size, text, 'bold')
-      const margin = height + (index * fit)
-      this.drawText(ctx, text, x, y + margin, size, 'bold')
-    })
-  }
-
   getWidthHeightText = (ctx, size, label, weight) => {
-    const text = `${weight} ${size}px ${FONT_FAMILY}`
-    ctx.font = text
+    ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
     return {
       width: ctx.measureText(label).width,
       height: getHeightText(size),
     }
+  }
+
+  drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
+    totalText.forEach((text, index) => {
+      const { height } = this.getWidthHeightText(ctx, size, text, weight)
+      const margin = height + (index * fit)
+      this.drawText(ctx, text, x, y + margin, size, weight)
+    })
   }
 
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
