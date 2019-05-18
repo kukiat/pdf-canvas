@@ -7,13 +7,11 @@ const getHeightText = (height) => {
 }
 
 const WIDTH = 760
-const HEIGHT = 900
+const HEIGHT = 4000
 const PADDING = 10
 const GAP = 10
-const FONT_FAMILY = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
+const FONT_FAMILY = 'verdana, sans-serif'
 
-const startX = 0 + PADDING
-const startY = 0 + PADDING
 const barcodeAreaHeight = 100
 const headerAreaHeigth = 60
 
@@ -24,24 +22,52 @@ class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
+    this.left = 0
+    this.right = 0
+    this.position = 'left'
   }
 
   componentDidMount() {
-    this.drawCanvas()
-  }
-
-  drawCanvas = () => {
-    const order = this.props.orderList[0]
-    const padding = 10
-    const width = ((WIDTH - (PADDING * 2) - GAP) / 2)
-
     const ctx = this.canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
+    this.props.orderList.forEach(order => {
+      this.position = this.getPosition()
+      const { startX, startY } = this.getStartXY(this.position)
+      this.drawCanvas(ctx, order, startX, startY)
+    })
+  }
+
+  getWidthInner() {
+    return ((WIDTH - (PADDING * 2) - GAP) / 2)
+  }
+
+  getStartXY = (position) => {
+    if (position === 'left') {
+      return {
+        startX: 0 + PADDING,
+        startY: PADDING + this.left
+      }
+    }
+    return {
+      startX: 375 + PADDING,
+      startY: PADDING + this.right
+    }
+  }
+
+  setPosition = (position, size) => {
+    this[position] = size
+  }
+
+  getPosition = () => {
+    return this.left > this.right ? 'right' : 'left'
+  }
+
+  drawCanvas = (ctx, order, startX, startY) => {
+    const padding = 10
+    const width = this.getWidthInner()
 
     this.drawLine(ctx, startX, startY, startX + width, startY) //เส้นบน
-    this.drawLine(ctx, startX, startY, startX, 500) //เส้นซ้าย
-    this.drawLine(ctx, startX + width, startY, startX + width, 500) //เส้นขวา
 
     this.drawLine(
       ctx, startX +
@@ -94,7 +120,7 @@ class OrderPreview extends Component {
     )
 
     const fontSizeOrderPage = 16
-    const orderPageText = `1 of ${this.props.orderList.length}`
+    const orderPageText = `${Number(order.id) + 1} of ${this.props.orderList.length}`
     const fontSizeTextOrderPage = this.getWidthHeightText(ctx, fontSizeOrderPage, orderPageText, 'normal')
     const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - fontSizeTextOrderPage.height) / 2
     const paddingHorizontalOrderPage = (rightAreaHeader - padding - fontSizeTextOrderPage.width) / 2
@@ -107,7 +133,7 @@ class OrderPreview extends Component {
       'normal'
     )
 
-    this.drawContent(ctx, order)
+    this.drawContent(ctx, order, startX, startY)
     // JsBarcode(`#barcode`, order.barcode, {
     //   format: "CODE128B",
     //   lineColor: "#000",
@@ -121,7 +147,7 @@ class OrderPreview extends Component {
     // })
   }
 
-  drawContent(ctx, order) {
+  drawContent(ctx, order, startX, startY) {
     const qrcodeAreaWidth = 88
     const startXContent = startX + paddingContentHorizontal
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
@@ -131,7 +157,7 @@ class OrderPreview extends Component {
     const reciverNameSizeText = 14
     const reciverNameFit = 20
     const reciverNameDetails = this.getDetailsTextGroup(ctx, reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
-    heightContent = heightContent + paddingContentVertical
+    heightContent += paddingContentVertical
     this.drawTextGroup(ctx, {
       ...reciverNameDetails,
       fit: reciverNameFit,
@@ -155,7 +181,6 @@ class OrderPreview extends Component {
       weight: 'bold'
     })
 
-    this.drawLine(ctx, 277, 250, 277, 400)
     const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
     const senderNameSizeText = 12
     const senderNameFit = 16
@@ -182,7 +207,7 @@ class OrderPreview extends Component {
       size: senderAddressSizeText,
     })
 
-    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
+    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`, `${order.type}, `, ' xxxxxx', ' xxxxxx', ' xxxxxx', ' xxxxxx', ' xxxxxx']
     const orderDetailsTextSize = 12
     const orderDetailsFit = 16
     const orderDetails = this.getDetailsTextGroup(ctx, orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
@@ -194,6 +219,46 @@ class OrderPreview extends Component {
       y: heightContent,
       size: orderDetailsTextSize,
     })
+
+    // const orderEgTextSize = 12
+    // const orderEgFit = 18
+    // const egDetails = this.splitLineText(ctx, `หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
+    // heightContent += orderDetails.height
+    // this.drawTextGroup(ctx, {
+    //   totalText: egDetails.newText,
+    //   fit: orderEgFit,
+    //   x: startXContent,
+    //   y: heightContent + 20,
+    //   size: orderEgTextSize,
+    // })
+
+    heightContent += orderDetails.height + paddingContentVertical
+    this.setPosition(this.position, heightContent)
+    const width = this.getWidthInner()
+    this.drawLine(ctx, startX, startY, startX, heightContent) //เส้นซ้าย
+    this.drawLine(ctx, startX + width, startY, startX + width, heightContent)
+    this.drawLine(ctx, startX, heightContent, startX + width, heightContent)
+  }
+
+  splitLineText = (ctx, text, size, fit, weight) => {
+    const maxWidth = 340
+    let newText = ['']
+    let eachWidth = 0
+    let currectLine = 0
+    for (let word of text) {
+      const { width } = this.getWidthHeightText(ctx, size, word, weight)
+      eachWidth += width
+      newText[currectLine] += word
+      if (eachWidth > maxWidth) {
+        eachWidth = 0
+        currectLine += 1
+        newText.push('')
+      }
+    }
+    const height = newText.reduce((prev, curr) => {
+      return prev + this.getWidthHeightText(ctx, size, curr, weight).height + fit
+    }, 0)
+    return { newText, height: height - fit }
   }
 
   getDetailsTextGroup(ctx, textArr, size, weight, fit = 0, areaWidth = 0) {
@@ -205,11 +270,10 @@ class OrderPreview extends Component {
     textArr.forEach((text) => {
       const { width, height } = this.getWidthHeightText(ctx, size, text, weight)
       widthTemp += width
-
       if (widthTemp > maxWidth) {
         totalHeight += fit
         totalText.push(text)
-        widthTemp = 0
+        widthTemp = width
       } else {
         if (!totalText.length) {
           totalHeight += height

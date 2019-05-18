@@ -17,7 +17,7 @@ export const orderList = [
     date: '16/01/1996 13:31',
     type: 'Envelop',
     weight: '0.07 g',
-    eg: 'wdadwadssdw wdadwawdawd'
+    eg: 'wdadwadssdw wdadwawdawd, '
   },
   {
     id: '1',
