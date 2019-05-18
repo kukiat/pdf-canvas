@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import JsBarcode from 'jsbarcode'
+import Slider from "react-slick"
 
 const getHeightText = (height) => {
   return height - (0.2 * height)
@@ -15,6 +16,9 @@ const startX = 0 + PADDING
 const startY = 0 + PADDING
 const barcodeAreaHeight = 100
 const headerAreaHeigth = 60
+
+const paddingContentHorizontal = 10
+const paddingContentVertical = 15
 class OrderPreview extends Component {
   constructor(props) {
     super(props)
@@ -22,10 +26,6 @@ class OrderPreview extends Component {
   }
 
   componentDidMount() {
-    this.drawCanvas()
-  }
-
-  componentDidUpdate() {
     this.drawCanvas()
   }
 
@@ -107,7 +107,7 @@ class OrderPreview extends Component {
       'normal'
     )
 
-    this.drawContent(ctx)
+    this.drawContent(ctx, order)
     // JsBarcode(`#barcode`, order.barcode, {
     //   format: "CODE128B",
     //   lineColor: "#000",
@@ -121,43 +121,43 @@ class OrderPreview extends Component {
     // })
   }
 
-  drawContent = (ctx) => {
-    const padding = 10
-    const startXContent = startX + padding
+  drawContent = (ctx, order) => {
+    const startXContent = startX + paddingContentHorizontal
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
-    // this.drawText(ctx, 'Kuwadwawad', startXContent, startYContent, 20)
-    const fontSizeReciverName = 14
-    const heightTextReciverName = getHeightText(fontSizeReciverName)
+
+    const fontSizeReciverName = 16
+    const textReciverName = `ผู้รับ: ${order.reciver.name}`
+    const fontSizeTextReciverName = this.getWidthHeightText(ctx, fontSizeReciverName, textReciverName, 'bold')
+    this.drawText(
+      ctx,
+      textReciverName,
+      startXContent,
+      startYContent + fontSizeTextReciverName.height + paddingContentVertical,
+      fontSizeReciverName
+    )
   }
 
-  getWidthHeightText = (ctx, size, label, weigth) => {
-    const text = `${weigth} ${size}px ${FONT_FAMILY}`
+  getDetailsTextGroup = (ctx, textArr, size, weight, margin) => {
+    const maxWidth = ((WIDTH - (PADDING * 2) - GAP) / 2) - (paddingContentHorizontal * 2)
+    let totalLine = 0
+    textArr.forEach((text) => {
+      ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
+      const width = ctx.measureText(text).width
+      totalLine += width % maxWidth
+    })
+  }
+
+  drawTextGroup = () => {
+
+  }
+
+  getWidthHeightText = (ctx, size, label, weight) => {
+    const text = `${weight} ${size}px ${FONT_FAMILY}`
     ctx.font = text
     return {
       width: ctx.measureText(label).width,
       height: getHeightText(size),
     }
-  }
-
-  drawGroupText = (ctx, order, beginX, beginY) => {
-    this.drawText(ctx, `ผู้รับ: ${order.reciver.name} T: ${order.reciver.phoneNumber}`, beginX, beginY, 14, 'bold')
-    this.drawText(ctx, `${order.reciver.address}`, beginX, 210, 14, 'bold')
-
-    this.drawText(ctx, `ผู้ส่ง: ${order.sender.name} T: ${order.sender.phoneNumber}`, beginX, 240, 13)
-    this.drawText(ctx, `${order.sender.address}`, beginX, 260, 13)
-
-    this.drawText(ctx, `${order.date}, (${order.type}), ${order.weight}`, beginX, 300, 13)
-
-    this.drawText(ctx, `หมายเหตุ: ${order.eg}`, beginX, 330, 13)
-    this.drawText(ctx, `หมายเหตุ: ${order.eg}`, beginX, 450, 13)
-
-  }
-
-  drawRact = (ctx, width, height, borderRadius) => {
-    this.drawLine(ctx, 5, 0 + borderRadius, 5, height - borderRadius)
-    // this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
-    this.drawLine(ctx, 455, height - borderRadius, 455, 0 + borderRadius)
-    this.drawLine(ctx, width - borderRadius, 5, 0 + borderRadius, 5)
   }
 
   drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
@@ -176,15 +176,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div
-        style={{
-          position: 'relative',
-        }}
-      >
-        <canvas
-          id={`barcode`}
-          style={{ position: 'absolute', top: 20, left: 60 }}
-        />
+      <div>
         <canvas ref={node => this.canvasRef = node} />
       </div>
     )

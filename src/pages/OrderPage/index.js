@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Slider from "react-slick"
 import { orderList } from './data'
 import { Button } from 'antd'
 import { OrderPreview, OrderList } from '../../features'
@@ -50,6 +51,7 @@ class OrderPage extends Component {
           <Button type="primary" onClick={modals.previewOrder.onOpen}>Preview</Button>
         </div>
         <OrderList orderList={orderList} />
+
         <ModalWrapper {...modals.previewOrder}>
           <OrderPreview orderList={orderList} />
         </ModalWrapper>
