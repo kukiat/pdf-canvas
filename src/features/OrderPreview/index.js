@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
 import JsBarcode from 'jsbarcode'
-import Slider from "react-slick"
-
-const getHeightText = (height) => {
-  return height - (0.2 * height)
-}
 
 const WIDTH = 760
 const HEIGHT = 4000
@@ -42,32 +37,31 @@ class OrderPreview extends Component {
     return ((WIDTH - (PADDING * 2) - GAP) / 2)
   }
 
-  getStartXY = (position) => {
+  getStartXY(position) {
     if (position === 'left') {
       return {
         startX: 0 + PADDING,
         startY: PADDING + this.left
       }
     }
+    const area = (WIDTH - GAP) / 2
     return {
-      startX: 375 + PADDING,
+      startX: area + PADDING,
       startY: PADDING + this.right
     }
   }
 
-  setPosition = (position, size) => {
+  setPosition(position, size) {
     this[position] = size
   }
 
-  getPosition = () => {
+  getPosition() {
     return this.left > this.right ? 'right' : 'left'
   }
 
-  drawCanvas = (ctx, order, startX, startY) => {
+  drawCanvas(ctx, order, startX, startY) {
     const padding = 10
     const width = this.getWidthInner()
-
-    this.drawLine(ctx, startX, startY, startX + width, startY) //เส้นบน
 
     this.drawLine(
       ctx, startX +
@@ -234,13 +228,15 @@ class OrderPreview extends Component {
 
     heightContent += orderDetails.height + paddingContentVertical
     this.setPosition(this.position, heightContent)
+
     const width = this.getWidthInner()
-    this.drawLine(ctx, startX, startY, startX, heightContent) //เส้นซ้าย
+    this.drawLine(ctx, startX, startY, startX + width, startY)
+    this.drawLine(ctx, startX, startY, startX, heightContent)
     this.drawLine(ctx, startX + width, startY, startX + width, heightContent)
     this.drawLine(ctx, startX, heightContent, startX + width, heightContent)
   }
 
-  splitLineText = (ctx, text, size, fit, weight) => {
+  splitLineText(ctx, text, size, fit, weight) {
     const maxWidth = 340
     let newText = ['']
     let eachWidth = 0
@@ -291,12 +287,16 @@ class OrderPreview extends Component {
     }
   }
 
-  getWidthHeightText = (ctx, size, label, weight) => {
+  getWidthHeightText(ctx, size, label, weight) {
     ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
     return {
       width: ctx.measureText(label).width,
-      height: getHeightText(size),
+      height: this.getHeightText(size),
     }
+  }
+
+  getHeightText(height) {
+    return height - (0.2 * height)
   }
 
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
@@ -307,12 +307,12 @@ class OrderPreview extends Component {
     })
   }
 
-  drawText = (ctx, label = '', x, y, size, weight = 'normal') => {
+  drawText(ctx, label = '', x, y, size, weight = 'normal') {
     ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
     ctx.fillText(label, x, y)
   }
 
-  drawLine = (ctx, moveToX, moveToY, lineToX, lineToY) => {
+  drawLine(ctx, moveToX, moveToY, lineToX, lineToY) {
     ctx.beginPath()
     ctx.strokeStyle = "#000"
     ctx.lineWidth = 1
