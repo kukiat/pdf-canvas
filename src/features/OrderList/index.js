@@ -6,8 +6,8 @@ const OrderList = ({ orderList }) => {
   return (
     <div className='order-list-container'>
       {
-        orderList.map(order => (
-          <Card title={order.orderName}>
+        orderList.map((order, index) => (
+          <Card title={order.orderName} key={index}>
             <div className='text-group'>
               <h4>ผู้ส่ง</h4>
               <p>{order.sender.name}</p>

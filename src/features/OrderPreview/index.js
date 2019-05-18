@@ -5,9 +5,10 @@ function getHeightText(height) {
   return height - (0.2 * height)
 }
 
-const WIDTH = 370
-const HEIGHT = 400
+const WIDTH = 760
+const HEIGHT = 900
 const PADDING = 10
+const GAP = 10
 class OrderPreview extends Component {
   constructor(props) {
     super(props)
@@ -24,34 +25,91 @@ class OrderPreview extends Component {
 
   drawCanvas = () => {
     const order = this.props.orderList[0]
-    const startX = 0
-    const startY = 0
-    const endX = 0
-    const endY = 0
+    const localPadding = 10
+    const width = ((WIDTH - (PADDING * 2) - GAP) / 2)
+    const startX = 0 + PADDING
+    const startY = 0 + PADDING
+
+    console.log(`(${startX},${startY})`)
     const ctx = this.canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
-    const localPadding = 10
-    // this.drawRact(ctx, WIDTH, HEIGHT, 10)
-    this.drawLine(ctx, PADDING, PADDING, WIDTH - PADDING, PADDING)
-    this.drawLine(ctx, PADDING, PADDING, PADDING, 500)
-    this.drawLine(ctx, WIDTH - PADDING, PADDING, WIDTH - PADDING, 500)
+
+    this.drawLine(ctx, startX, startY, startX + width, startY) //เส้นบน
+    this.drawLine(ctx, startX, startY, startX, 500) //เส้นซ้าย
+    this.drawLine(ctx, startX + width, startY, startX + width, 500) //เส้นขวา
+
+
     const barcodeAreaHeight = 100
     const headerAreaHeigth = 60
-    const offsetYSepLine = 0.7 * (WIDTH - (localPadding * 2) - (PADDING * 2))
-    this.drawLine(ctx, PADDING + localPadding, barcodeAreaHeight + PADDING, WIDTH - localPadding - PADDING, barcodeAreaHeight + PADDING)
-    this.drawLine(ctx, PADDING + localPadding, barcodeAreaHeight + headerAreaHeigth + PADDING, WIDTH - localPadding - PADDING, barcodeAreaHeight + headerAreaHeigth + PADDING)
-    this.drawLine(ctx, offsetYSepLine, barcodeAreaHeight + PADDING, offsetYSepLine, barcodeAreaHeight + PADDING + headerAreaHeigth)
+    this.drawLine(
+      ctx, startX +
+      localPadding,
+      startY + barcodeAreaHeight,
+      startX + width - localPadding,
+      startY + barcodeAreaHeight
+    )
+    this.drawLine(
+      ctx,
+      startX + localPadding,
+      startY + barcodeAreaHeight + headerAreaHeigth,
+      startX + width - localPadding,
+      startY + barcodeAreaHeight + headerAreaHeigth
+    )
+    const leftAreaHeader = Math.floor(0.65 * width)
+    const rightAreaHeader = width - leftAreaHeader
+    this.drawLine(
+      ctx,
+      startX + leftAreaHeader,
+      startY + barcodeAreaHeight,
+      startX + leftAreaHeader,
+      startY + barcodeAreaHeight + headerAreaHeigth
+    )
 
-    const fontSizeOrderName = 22
+    const fontSizeOrderName = 24
     const heightText = getHeightText(fontSizeOrderName)
-    const offsetYOrderName = PADDING + barcodeAreaHeight + heightText + ((headerAreaHeigth - heightText) / 2)
+    const offsetYOrderName = barcodeAreaHeight + heightText + ((headerAreaHeigth - heightText) / 2)
     ctx.font = `bold ${fontSizeOrderName}px verdana, sans-serif`
-    const offsetXOrderName = ((offsetYSepLine - ctx.measureText(order.orderName).width) / 2)
-    this.drawText(ctx, order.orderName, offsetXOrderName + PADDING, offsetYOrderName, fontSizeOrderName, 'bold')
+    const offsetXOrderName = ((leftAreaHeader - ctx.measureText(order.orderName).width) / 2)
+    this.drawText(
+      ctx,
+      order.orderName,
+      offsetXOrderName + startX,
+      offsetYOrderName + startY,
+      fontSizeOrderName,
+      'bold'
+    )
 
-    // this.drawText(ctx, order.orderId, 330, 125, 20, 'bold')
-    // this.drawText(ctx, '1 of 1', 350, 150, 15)
+    const fontSizeOrderId = 20
+    const heightOrderIdText = getHeightText(fontSizeOrderId)
+    const paddingVerticalOrderIdText = ((headerAreaHeigth / 2) - heightOrderIdText) / 2
+    ctx.font = `bold ${fontSizeOrderId}px verdana, sans-serif`
+    const offsetXOrderId = startX + leftAreaHeader
+    const paddingTextOrderId = (rightAreaHeader - localPadding - ctx.measureText(order.orderId).width) / 2
+    this.drawText(
+      ctx,
+      order.orderId,
+      offsetXOrderId + paddingTextOrderId,
+      startY + barcodeAreaHeight + heightOrderIdText + paddingVerticalOrderIdText,
+      fontSizeOrderId,
+      'bold'
+    )
+
+    const fontSizeOrderPage = 16
+    const heightOrderPageText = getHeightText(fontSizeOrderPage)
+    const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - heightOrderPageText) / 2
+    const orderPageText = `1 of 1`
+    ctx.font = `normal ${fontSizeOrderPage}px verdana, sans-serif`
+    const offsetXOrderPage = startX + leftAreaHeader
+    const paddingTextOrderPage = (rightAreaHeader - localPadding - ctx.measureText(orderPageText).width) / 2
+    this.drawText(
+      ctx,
+      orderPageText,
+      offsetXOrderPage + paddingTextOrderPage,
+      startY + barcodeAreaHeight + heightOrderPageText + paddingVerticalOrderPageText + (headerAreaHeigth / 2),
+      fontSizeOrderPage,
+      'normal'
+    )
 
     // this.drawLine(ctx, 0 + borderRadius, 395, width - borderRadius, 395)
     // this.drawLine(ctx, 455, height - borderRadius, 455, 0 + borderRadius)
