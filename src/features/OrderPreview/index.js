@@ -121,34 +121,60 @@ class OrderPreview extends Component {
     // })
   }
 
-  drawContent = (ctx, order) => {
+  drawContent(ctx, order) {
     const startXContent = startX + paddingContentHorizontal
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
 
-    const fontSizeReciverName = 16
-    const textReciverName = `ผู้รับ: ${order.reciver.name}`
-    const fontSizeTextReciverName = this.getWidthHeightText(ctx, fontSizeReciverName, textReciverName, 'bold')
-    this.drawText(
-      ctx,
-      textReciverName,
-      startXContent,
-      startYContent + fontSizeTextReciverName.height + paddingContentVertical,
-      fontSizeReciverName
-    )
-  }
-
-  getDetailsTextGroup = (ctx, textArr, size, weight, margin) => {
-    const maxWidth = ((WIDTH - (PADDING * 2) - GAP) / 2) - (paddingContentHorizontal * 2)
-    let totalLine = 0
-    textArr.forEach((text) => {
-      ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
-      const width = ctx.measureText(text).width
-      totalLine += width % maxWidth
+    const texts = [`ผู้รับ: ${order.reciver.name}`, `T: ${order.reciver.phoneNumber}`]
+    const reciverNameSizeText = 14
+    const reciverNameFit = 20
+    const reciverNameDetails = this.getDetailsTextGroup(ctx, texts, reciverNameSizeText, 'bold', reciverNameFit)
+    this.drawTextGroup(ctx, {
+      ...reciverNameDetails,
+      fit: reciverNameFit,
+      x: startXContent,
+      y: startYContent + paddingContentVertical,
+      size: reciverNameSizeText,
     })
   }
 
-  drawTextGroup = () => {
+  getDetailsTextGroup(ctx, textArr, size, weight, fit = 0) {
+    const maxWidth = ((WIDTH - (PADDING * 2) - GAP) / 2) - (paddingContentHorizontal * 2)
+    let widthTemp = 0
+    let totalText = []
+    let totalHeight = 0
+    textArr.forEach((text) => {
+      ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
+      const { width, height } = this.getWidthHeightText(ctx, size, text, weight)
+      widthTemp += width
 
+      if (widthTemp > maxWidth) {
+        totalHeight = height + fit
+        totalText.push(text)
+        widthTemp -= maxWidth
+      } else {
+        if (!totalText.length) {
+          totalHeight += height
+          totalText.push(text)
+        } else {
+          totalText[totalText.length - 1] = totalText[totalText.length - 1] + ' ' + text
+        }
+      }
+    })
+    return {
+      line: totalText.length,
+      totalText,
+      width: maxWidth,
+      height: totalHeight
+    }
+  }
+
+  drawTextGroup(ctx, { fit, x, y, totalText, size }) {
+    totalText.forEach((text, index) => {
+      const { height } = this.getWidthHeightText(ctx, size, text, 'bold')
+      const margin = height + (index * fit)
+      this.drawText(ctx, text, x, y + margin, size, 'bold')
+    })
   }
 
   getWidthHeightText = (ctx, size, label, weight) => {
