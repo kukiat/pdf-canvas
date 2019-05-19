@@ -17,7 +17,7 @@ export const orderList = [
     date: '16/01/1996 13:31',
     type: 'Envelop',
     weight: '0.07 g',
-    eg: 'wdadwadssdw wdadwawdawd, '
+    eg: 'xxxxx xxxx xxxxx'
   },
   {
     id: '1',
@@ -37,7 +37,7 @@ export const orderList = [
     date: '16/01/1996 13:31',
     type: 'Envelop',
     weight: '0.07 g',
-    eg: 'wdadwadssdw wdadwawdawd, '
+    eg: 'Job Server เอาไว้เรียกใช้ Jobs ตามเวลา'
   },
   {
     id: '2',
@@ -57,7 +57,7 @@ export const orderList = [
     date: '16/01/1996 13:31',
     type: 'Envelop',
     weight: '0.07 g',
-    eg: 'wdadwadssdw'
+    eg: 'Facebook (เห็นไหม facebook ยังใช้ PHP เลย มิตรสหายท่านนึงที่เปลี่ยนไปเขียน JS ได้กล่าวไว้)'
   },
   {
     id: '3',
@@ -77,7 +77,7 @@ export const orderList = [
     date: '16/01/1996 13:31',
     type: 'Envelop',
     weight: '0.07 g',
-    eg: 'wdadwadssdw'
+    eg: 'เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ'
   },
   {
     id: '4',
