@@ -207,7 +207,7 @@ class OrderPreview extends Component {
       size: senderAddressSizeText,
     })
 
-    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`, `${order.type}`]
+    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
     const orderDetailsTextSize = 12
     const orderDetailsFit = 16
     const orderDetails = this.getDetailsTextGroup(ctx, orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)

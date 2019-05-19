@@ -36,7 +36,7 @@ class OrderPage extends Component {
         date: '16/01/1996 13:31',
         type: 'Envelop',
         weight: '0.07 g',
-        eg: 'ปปปปปปปปปปปปปปปปปปปปปปปปปปปปปป ปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปป ปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปปป'
+        eg: '555In the draw for the round of 16, the eight group winners are seeded, and the eight group runners-up are unseeded. The seeded teams are'
       })
     })
   }
