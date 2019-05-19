@@ -25,31 +25,30 @@ class OrderPreview extends Component {
   }
 
   componentDidMount() {
+    this.initCanvas()
+  }
+
+  initCanvas() {
     const canvasRef = this.canvasRef
     const ctx = canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
       const { startX, startY } = this.renderCanvas.getCurrentPosition()
-      this.drawBarcode(order, startX, startY)
       this.drawCanvas(ctx, order, startX, startY)
+      this.drawBarcode(order, startX, startY)
       this.drawQrcode(order)
     })
   }
 
-  convertPositionBarCode(x, y) {
-    const width = this.getWidthInner()
-    return {
-      x: (width - 242) / 2 + x,
-      y: (barcodeAreaHeight - 72) / 2 + y
-    }
-  }
-
   drawQrcode(order) {
-    const { x, y } = this.renderCanvas.getCheckPointQr()
-    qr.toCanvas(order.sender.phoneNumber, { errorCorrectionLevel: 'H', width: qrcodeAreaWidth }, (err, canvas) => {
+    const { x, y } = this.renderCanvas.getCheckPointQr(qrcodeAreaWidth)
+    const options = {
+      errorCorrectionLevel: 'H',
+      width: qrcodeAreaWidth
+    }
+    qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {
       if (err) throw err
-      canvas.setAttribute('id', `qrcode${order.id}`)
       canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
       this.div.insertBefore(canvas, this.canvasRef)
     })
@@ -74,10 +73,6 @@ class OrderPreview extends Component {
       font: FONT_FAMILY,
       textMargin: 5
     })
-  }
-
-  getWidthInner() {
-    return ((WIDTH - (PADDING * 2) - GAP) / 2)
   }
 
   drawCanvas(ctx, order, startX, startY) {
@@ -295,6 +290,18 @@ class OrderPreview extends Component {
       totalText,
       width: maxWidth,
       height: totalHeight
+    }
+  }
+
+  getWidthInner() {
+    return ((WIDTH - (PADDING * 2) - GAP) / 2)
+  }
+
+  convertPositionBarCode(x, y) {
+    const width = this.getWidthInner()
+    return {
+      x: (width - 242) / 2 + x,
+      y: (barcodeAreaHeight - 72) / 2 + y
     }
   }
 

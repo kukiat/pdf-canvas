@@ -36,32 +36,17 @@ class RenderCanvas {
       startY: this.padding + this.right
     }
   }
+
   setCheckPointQr(size) {
     this.currentQr = size
   }
 
-  getCheckPointQr() {
-    const area = (this.width - this.gap) / 2
+  getCheckPointQr(width) {
+    const area = this.currentSide === 'left' ? this.width / 2 : this.width
     return {
-      x: this.currentSide === 'left' ? this.width / 2 - 108 : this.width - 108,
+      x: area - (width + this.gap + this.padding),
       y: this.currentQr
     }
-  }
-}
-
-export class RenderOrderCanvas {
-  drawMultiText() {
-
-  }
-
-  drawText() {
-
-  }
-  drawLine() {
-
-  }
-  init() {
-
   }
 }
 
