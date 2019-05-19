@@ -21,17 +21,40 @@ class OrderPreview extends Component {
     this.left = 0
     this.right = 0
     this.position = 'left'
+    this.startX = 0
+    this.startY = 0
   }
 
   componentDidMount() {
-    const ctx = this.canvasRef.getContext('2d')
+    const canvasRef = this.canvasRef
+    const ctx = canvasRef.getContext('2d')
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
       this.position = this.getPosition()
       const { startX, startY } = this.getStartXY(this.position)
+      this.drawBarcode(order, startX, startX)
       this.drawCanvas(ctx, order, startX, startY)
     })
+  }
+
+  drawBarcode(order, startX, startY) {
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('id', `barcode${order.id}`)
+    canvas.style = `position:absolute;margin-top:${startY}px;margin-left:${startX}px`
+    this.div.insertBefore(canvas, this.canvasRef)
+    // JsBarcode(`#barcode${order.id}`, order.barcode, {
+    //   marginTop: 20,
+    //   format: "CODE128B",
+    //   lineColor: "#000",
+    //   width: 1,
+    //   height: 35,
+    //   displayValue: true,
+    //   text: order.barcode,
+    //   fontSize: 12,
+    //   font: FONT_FAMILY,
+    //   textMargin: 5
+    // })
   }
 
   getWidthInner() {
@@ -57,7 +80,11 @@ class OrderPreview extends Component {
   }
 
   getPosition() {
-    return this.left > this.right ? 'right' : 'left'
+    if (this.left > this.right) {
+      return 'right'
+    } else {
+      return 'left'
+    }
   }
 
   drawCanvas(ctx, order, startX, startY) {
@@ -323,7 +350,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: '#fff' }}>
+      <div style={{ backgroundColor: '#fff' }} ref={node => this.div = node}>
         <canvas ref={node => this.canvasRef = node} />
       </div>
     )
