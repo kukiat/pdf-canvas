@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import JsBarcode from 'jsbarcode'
+import { isEmpty } from 'lodash'
 
 const WIDTH = 760
 const HEIGHT = 4000
@@ -201,7 +202,7 @@ class OrderPreview extends Component {
       size: senderAddressSizeText,
     })
 
-    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`, `${order.type}, `, ' xxxxxx', ' xxxxxx', ' xxxxxx', ' xxxxxx', ' xxxxxx']
+    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`, `${order.type}`]
     const orderDetailsTextSize = 12
     const orderDetailsFit = 16
     const orderDetails = this.getDetailsTextGroup(ctx, orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
@@ -214,19 +215,20 @@ class OrderPreview extends Component {
       size: orderDetailsTextSize,
     })
 
-    // const orderEgTextSize = 12
-    // const orderEgFit = 18
-    // const egDetails = this.splitLineText(ctx, `หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
-    // heightContent += orderDetails.height
-    // this.drawTextGroup(ctx, {
-    //   totalText: egDetails.newText,
-    //   fit: orderEgFit,
-    //   x: startXContent,
-    //   y: heightContent + 20,
-    //   size: orderEgTextSize,
-    // })
+    const orderEgTextSize = 12
+    const orderEgFit = 16
+    const textArr = this.splitLineText(ctx, `หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
+    const egDetails = this.getDetailsTextGroup(ctx, textArr, orderEgTextSize, 'normal', orderEgFit)
+    heightContent += orderDetails.height + 20
+    this.drawTextGroup(ctx, {
+      ...egDetails,
+      fit: orderEgFit,
+      x: startXContent,
+      y: heightContent,
+      size: orderEgTextSize,
+    })
 
-    heightContent += orderDetails.height + paddingContentVertical
+    heightContent += egDetails.height + paddingContentVertical
     this.setPosition(this.position, heightContent)
 
     const width = this.getWidthInner()
@@ -251,10 +253,8 @@ class OrderPreview extends Component {
         newText.push('')
       }
     }
-    const height = newText.reduce((prev, curr) => {
-      return prev + this.getWidthHeightText(ctx, size, curr, weight).height + fit
-    }, 0)
-    return { newText, height: height - fit }
+
+    return newText
   }
 
   getDetailsTextGroup(ctx, textArr, size, weight, fit = 0, areaWidth = 0) {
@@ -271,7 +271,7 @@ class OrderPreview extends Component {
         totalText.push(text)
         widthTemp = width
       } else {
-        if (!totalText.length) {
+        if (isEmpty(totalText)) {
           totalHeight += height
           totalText.push(text)
         } else {
@@ -323,7 +323,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ backgroundColor: '#fff' }}>
         <canvas ref={node => this.canvasRef = node} />
       </div>
     )
