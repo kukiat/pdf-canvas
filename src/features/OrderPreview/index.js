@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import RenderCanvas from './RenderCanvas'
 import JsBarcode from 'jsbarcode'
+import qr from 'qrcode'
 import { isEmpty } from 'lodash'
 
 const WIDTH = 760
-const HEIGHT = 4000
+const HEIGHT = 6000
 const PADDING = 10
 const GAP = 10
 const FONT_FAMILY = 'verdana, sans-serif'
 
 const barcodeAreaHeight = 100
+const qrcodeAreaWidth = 88
 const headerAreaHeigth = 60
 
 const paddingContentHorizontal = 10
@@ -31,6 +33,7 @@ class OrderPreview extends Component {
       const { startX, startY } = this.renderCanvas.getCurrentPosition()
       this.drawBarcode(order, startX, startY)
       this.drawCanvas(ctx, order, startX, startY)
+      this.drawQrcode(order)
     })
   }
 
@@ -42,13 +45,22 @@ class OrderPreview extends Component {
     }
   }
 
+  drawQrcode(order) {
+    const { x, y } = this.renderCanvas.getCheckPointQr()
+    qr.toCanvas(order.sender.phoneNumber, { errorCorrectionLevel: 'H', width: qrcodeAreaWidth }, (err, canvas) => {
+      if (err) throw err
+      canvas.setAttribute('id', `qrcode${order.id}`)
+      canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
+      this.div.insertBefore(canvas, this.canvasRef)
+    })
+  }
+
   drawBarcode(order, startX, startY) {
     const { x, y } = this.convertPositionBarCode(startX, startY)
 
     const canvas = document.createElement('canvas')
     canvas.setAttribute('id', `barcode${order.id}`)
     canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
-
     this.div.insertBefore(canvas, this.canvasRef)
 
     JsBarcode(`#barcode${order.id}`, order.barcode, {
@@ -139,7 +151,6 @@ class OrderPreview extends Component {
   }
 
   drawContent(ctx, order, startX, startY) {
-    const qrcodeAreaWidth = 88
     const startXContent = startX + paddingContentHorizontal
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
     let heightContent = startYContent
@@ -172,6 +183,7 @@ class OrderPreview extends Component {
       weight: 'bold'
     })
 
+
     const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
     const senderNameSizeText = 12
     const senderNameFit = 16
@@ -184,6 +196,8 @@ class OrderPreview extends Component {
       y: heightContent,
       size: senderNameSizeText,
     })
+
+    this.renderCanvas.setCheckPointQr(heightContent - 10)
 
     const senderAddressText = order.sender.address.split(' ')
     const senderAddressSizeText = 12

@@ -7,6 +7,7 @@ class RenderCanvas {
     this.left = 0
     this.right = 0
     this.currentSide = 'left'
+    this.currentQr = 0
   }
 
   changePosition() {
@@ -33,6 +34,17 @@ class RenderCanvas {
     return {
       startX: area + this.padding,
       startY: this.padding + this.right
+    }
+  }
+  setCheckPointQr(size) {
+    this.currentQr = size
+  }
+
+  getCheckPointQr() {
+    const area = (this.width - this.gap) / 2
+    return {
+      x: this.currentSide === 'left' ? this.width / 2 - 108 : this.width - 108,
+      y: this.currentQr
     }
   }
 }
