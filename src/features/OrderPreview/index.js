@@ -28,10 +28,8 @@ class OrderPreview extends Component {
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
-      const { startX, startY } = this.renderCanvas.initPosition(order.id)
-      const cas = this.renderCanvas.getCurrentPosition(order.id)
-      console.log(cas)
-      this.drawBarcode(order, cas.startX, cas.startY)
+      const { startX, startY } = this.renderCanvas.getCurrentPosition()
+      this.drawBarcode(order, startX, startY)
       this.drawCanvas(ctx, order, startX, startY)
     })
   }
@@ -45,10 +43,12 @@ class OrderPreview extends Component {
   }
 
   drawBarcode(order, startX, startY) {
-    const canvas = document.createElement('canvas')
     const { x, y } = this.convertPositionBarCode(startX, startY)
+
+    const canvas = document.createElement('canvas')
     canvas.setAttribute('id', `barcode${order.id}`)
     canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
+
     this.div.insertBefore(canvas, this.canvasRef)
 
     JsBarcode(`#barcode${order.id}`, order.barcode, {
@@ -320,7 +320,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: '#fff', position: 'relative' }} ref={node => this.div = node}>
+      <div ref={node => this.div = node}>
         <canvas ref={node => this.canvasRef = node} />
       </div>
     )
