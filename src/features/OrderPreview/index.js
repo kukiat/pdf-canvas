@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import RenderCanvas from './RenderCanvas'
 import JsBarcode from 'jsbarcode'
 import { isEmpty } from 'lodash'
 
@@ -18,11 +19,7 @@ class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
-    this.left = 0
-    this.right = 0
-    this.position = 'left'
-    this.startX = 0
-    this.startY = 0
+    this.renderCanvas = new RenderCanvas()
   }
 
   componentDidMount() {
@@ -31,9 +28,9 @@ class OrderPreview extends Component {
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
-      this.position = this.getPosition()
-      const { startX, startY } = this.getStartXY(this.position)
-      this.drawBarcode(order, startX, startX)
+      this.renderCanvas.changePosition()
+      const { startX, startY } = this.renderCanvas.getStartXY()
+      // this.drawBarcode(order, startX, startX)
       this.drawCanvas(ctx, order, startX, startY)
     })
   }
@@ -61,39 +58,12 @@ class OrderPreview extends Component {
     return ((WIDTH - (PADDING * 2) - GAP) / 2)
   }
 
-  getStartXY(position) {
-    if (position === 'left') {
-      return {
-        startX: 0 + PADDING,
-        startY: PADDING + this.left
-      }
-    }
-    const area = (WIDTH - GAP) / 2
-    return {
-      startX: area + PADDING,
-      startY: PADDING + this.right
-    }
-  }
-
-  setPosition(position, size) {
-    this[position] = size
-  }
-
-  getPosition() {
-    if (this.left > this.right) {
-      return 'right'
-    } else {
-      return 'left'
-    }
-  }
-
   drawCanvas(ctx, order, startX, startY) {
     const padding = 10
     const width = this.getWidthInner()
 
-    this.drawLine(
-      ctx, startX +
-      padding,
+    this.drawLine(ctx,
+      startX + padding,
       startY + barcodeAreaHeight,
       startX + width - padding,
       startY + barcodeAreaHeight
@@ -156,17 +126,6 @@ class OrderPreview extends Component {
     )
 
     this.drawContent(ctx, order, startX, startY)
-    // JsBarcode(`#barcode`, order.barcode, {
-    //   format: "CODE128B",
-    //   lineColor: "#000",
-    //   width: 1,
-    //   height: 40,
-    //   displayValue: true,
-    //   text: order.barcode,
-    //   fontSize: 12,
-    //   font: FONT_FAMILY,
-    //   textMargin: 5
-    // })
   }
 
   drawContent(ctx, order, startX, startY) {
@@ -256,7 +215,8 @@ class OrderPreview extends Component {
     })
 
     heightContent += egDetails.height + paddingContentVertical
-    this.setPosition(this.position, heightContent)
+
+    this.renderCanvas.setCurrentSizePosition(heightContent)
 
     const width = this.getWidthInner()
     this.drawLine(ctx, startX, startY, startX + width, startY)
