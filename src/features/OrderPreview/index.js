@@ -19,7 +19,7 @@ class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
-    this.renderCanvas = new RenderCanvas()
+    this.renderCanvas = new RenderCanvas(this.props.orderList, WIDTH, HEIGHT, PADDING, GAP)
   }
 
   componentDidMount() {
@@ -28,30 +28,40 @@ class OrderPreview extends Component {
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
-      this.renderCanvas.changePosition()
-      const { startX, startY } = this.renderCanvas.getStartXY()
-      // this.drawBarcode(order, startX, startX)
+      const { startX, startY } = this.renderCanvas.initPosition(order.id)
+      const cas = this.renderCanvas.getCurrentPosition(order.id)
+      console.log(cas)
+      this.drawBarcode(order, cas.startX, cas.startY)
       this.drawCanvas(ctx, order, startX, startY)
     })
   }
 
+  convertPositionBarCode(x, y) {
+    const width = this.getWidthInner()
+    return {
+      x: (width - 242) / 2 + x,
+      y: (barcodeAreaHeight - 72) / 2 + y
+    }
+  }
+
   drawBarcode(order, startX, startY) {
     const canvas = document.createElement('canvas')
+    const { x, y } = this.convertPositionBarCode(startX, startY)
     canvas.setAttribute('id', `barcode${order.id}`)
-    canvas.style = `position:absolute;margin-top:${startY}px;margin-left:${startX}px`
+    canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
     this.div.insertBefore(canvas, this.canvasRef)
-    // JsBarcode(`#barcode${order.id}`, order.barcode, {
-    //   marginTop: 20,
-    //   format: "CODE128B",
-    //   lineColor: "#000",
-    //   width: 1,
-    //   height: 35,
-    //   displayValue: true,
-    //   text: order.barcode,
-    //   fontSize: 12,
-    //   font: FONT_FAMILY,
-    //   textMargin: 5
-    // })
+
+    JsBarcode(`#barcode${order.id}`, order.barcode, {
+      format: "CODE128B",
+      lineColor: "#000",
+      width: 1,
+      height: 35,
+      displayValue: true,
+      text: order.barcode,
+      fontSize: 12,
+      font: FONT_FAMILY,
+      textMargin: 5
+    })
   }
 
   getWidthInner() {
@@ -310,7 +320,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: '#fff' }} ref={node => this.div = node}>
+      <div style={{ backgroundColor: '#fff', position: 'relative' }} ref={node => this.div = node}>
         <canvas ref={node => this.canvasRef = node} />
       </div>
     )
