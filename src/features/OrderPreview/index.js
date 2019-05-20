@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import CanvasLogic from './CanvasLogic'
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
 import { isEmpty } from 'lodash'
+import { getHeigthFromRatio } from '../../libs/utils'
 
-const WIDTH = 760
-const HEIGHT = 6000
+const WIDTH = 670
+// const HEIGHT = getHeigthFromRatio('a4')(WIDTH)
+const HEIGHT = 3000
 const PADDING = 10
 const GAP = 10
 const FONT_FAMILY = 'verdana, sans-serif'
@@ -21,24 +23,35 @@ class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
-    this.canvasLogic = new CanvasLogic(this.props.orderList, WIDTH, HEIGHT, PADDING, GAP)
+    this.canvasLogic = new CanvasLogic(WIDTH, HEIGHT, PADDING, GAP)
   }
 
   componentDidMount() {
-    this.initCanvas()
+    this.draw()
   }
 
   initCanvas() {
-    const canvasRef = this.canvasRef
-    const ctx = canvasRef.getContext('2d')
-    ctx.canvas.width = WIDTH
-    ctx.canvas.height = HEIGHT
+    const canvas = document.createElement('canvas')
+    this.div.appendChild(canvas)
+    this.ctx = canvas.getContext('2d')
+    this.ctx.canvas.width = WIDTH
+    this.ctx.canvas.height = HEIGHT
+  }
+
+  draw() {
+    this.initCanvas()
     this.props.orderList.forEach(order => {
       const { startX, startY } = this.canvasLogic.getCurrentPosition()
-      this.drawCanvas(ctx, order, startX, startY)
+      console.log(startX, startY)
+      // if (startY > HEIGHT) {
+      //   // this.initCanvas()
+      //   // this.recalculate()
+      // }
+      this.drawOrder(this.ctx, order, startX, startY)
       this.drawBarcode(order, startX, startY)
       this.drawQrcode(order)
     })
+    console.log(this.canvasLogic.possition)
   }
 
   drawQrcode(order) {
@@ -50,7 +63,7 @@ class OrderPreview extends Component {
     qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {
       if (err) throw err
       canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
-      this.div.insertBefore(canvas, this.canvasRef)
+      this.div.insertBefore(canvas, this.div.lastChild)
     })
   }
 
@@ -60,7 +73,7 @@ class OrderPreview extends Component {
     const canvas = document.createElement('canvas')
     canvas.setAttribute('id', `barcode${order.id}`)
     canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
-    this.div.insertBefore(canvas, this.canvasRef)
+    this.div.insertBefore(canvas, this.div.lastChild)
 
     JsBarcode(`#barcode${order.id}`, order.barcode, {
       format: "CODE128B",
@@ -75,9 +88,18 @@ class OrderPreview extends Component {
     })
   }
 
-  drawCanvas(ctx, order, startX, startY) {
+  drawOrder(ctx, order, startX, startY) {
     const padding = 10
     const width = this.getWidthInner()
+
+    // this.canvasLogic.setPosition(order.id, {
+    //   line1: {
+    //     startX: startX + padding,
+    //     startY: startY + barcodeAreaHeight,
+    //     endX: startX + width - padding,
+    //     endY: startY + barcodeAreaHeight,
+    //   }
+    // })
 
     this.drawLine(ctx,
       startX + padding,
@@ -85,6 +107,14 @@ class OrderPreview extends Component {
       startX + width - padding,
       startY + barcodeAreaHeight
     )
+    // this.canvasLogic.updatePosition(order.id, {
+    //   line2: {
+    //     startX: startX + padding,
+    //     startY: startY + barcodeAreaHeight + headerAreaHeigth,
+    //     endX: startX + width - padding,
+    //     endY: startY + barcodeAreaHeight + headerAreaHeigth
+    //   }
+    // })
     this.drawLine(
       ctx,
       startX + padding,
@@ -94,6 +124,16 @@ class OrderPreview extends Component {
     )
     const leftAreaHeader = Math.floor(0.65 * width)
     const rightAreaHeader = width - leftAreaHeader
+    // this.canvasLogic.updatePosition(order.id, {
+    //   leftAreaHeader,
+    //   rightAreaHeader,
+    //   line3: {
+    //     startX: startX + padding,
+    //     startY: startY + barcodeAreaHeight + headerAreaHeigth,
+    //     endX: startX + width - padding,
+    //     endY: startY + barcodeAreaHeight + headerAreaHeigth
+    //   }
+    // })
     this.drawLine(
       ctx,
       startX + leftAreaHeader,
@@ -102,7 +142,7 @@ class OrderPreview extends Component {
       startY + barcodeAreaHeight + headerAreaHeigth
     )
 
-    const fontSizeOrderName = 26
+    const fontSizeOrderName = 22
     const fontSizeTextOrderName = this.getWidthHeightText(ctx, fontSizeOrderName, order.orderName, 'bold')
     const paddingVerticalOrderName = barcodeAreaHeight + fontSizeTextOrderName.height + ((headerAreaHeigth - fontSizeTextOrderName.height) / 2)
     const paddingHorizontalOrderName = ((leftAreaHeader - padding - fontSizeTextOrderName.width) / 2)
@@ -115,7 +155,7 @@ class OrderPreview extends Component {
       'bold'
     )
 
-    const fontSizeOrderId = 20
+    const fontSizeOrderId = 16
     const fontSizeTextOrderId = this.getWidthHeightText(ctx, fontSizeOrderId, order.orderId, 'bold')
     const paddingVerticalOrderIdText = ((headerAreaHeigth / 2) - fontSizeTextOrderId.height) / 2
     const paddingHorizontalOrderId = (rightAreaHeader - padding - fontSizeTextOrderId.width) / 2
@@ -128,7 +168,7 @@ class OrderPreview extends Component {
       'bold'
     )
 
-    const fontSizeOrderPage = 16
+    const fontSizeOrderPage = 14
     const orderPageText = `${Number(order.id) + 1} of ${this.props.orderList.length}`
     const fontSizeTextOrderPage = this.getWidthHeightText(ctx, fontSizeOrderPage, orderPageText, 'normal')
     const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - fontSizeTextOrderPage.height) / 2
@@ -150,8 +190,8 @@ class OrderPreview extends Component {
     const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
     let heightContent = startYContent
 
-    const reciverNameText = [`ผู้รับ: ${order.reciver.name}`, `T: ${order.reciver.phoneNumber}`]
-    const reciverNameSizeText = 14
+    const reciverNameText = [`ผู้รับ: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
+    const reciverNameSizeText = 12
     const reciverNameFit = 20
     const reciverNameDetails = this.getDetailsTextGroup(ctx, reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
     heightContent += paddingContentVertical
@@ -165,7 +205,7 @@ class OrderPreview extends Component {
     })
 
     const reciverAddressText = order.reciver.address.split(' ')
-    const reciverAddressSizeText = 14
+    const reciverAddressSizeText = 12
     const reciverAddressFit = 18
     const reciverAddressDetails = this.getDetailsTextGroup(ctx, reciverAddressText, reciverAddressSizeText, 'bold', reciverAddressFit)
     heightContent += reciverNameDetails.height + 10
@@ -180,7 +220,7 @@ class OrderPreview extends Component {
 
 
     const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
-    const senderNameSizeText = 12
+    const senderNameSizeText = 10
     const senderNameFit = 16
     const senderNameDetails = this.getDetailsTextGroup(ctx, senderNameText, senderNameSizeText, 'normal', senderNameFit, qrcodeAreaWidth)
     heightContent += reciverAddressDetails.height + 20
@@ -195,7 +235,7 @@ class OrderPreview extends Component {
     this.canvasLogic.setCheckPointQr(heightContent - 10)
 
     const senderAddressText = order.sender.address.split(' ')
-    const senderAddressSizeText = 12
+    const senderAddressSizeText = 10
     const senderAddressFit = 16
     const senderAddressDetails = this.getDetailsTextGroup(ctx, senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, qrcodeAreaWidth)
     heightContent += senderNameDetails.height + 10
@@ -208,7 +248,7 @@ class OrderPreview extends Component {
     })
 
     const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
-    const orderDetailsTextSize = 12
+    const orderDetailsTextSize = 10
     const orderDetailsFit = 16
     const orderDetails = this.getDetailsTextGroup(ctx, orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
     heightContent += senderAddressDetails.height + 20
@@ -220,7 +260,7 @@ class OrderPreview extends Component {
       size: orderDetailsTextSize,
     })
 
-    const orderEgTextSize = 12
+    const orderEgTextSize = 10
     const orderEgFit = 16
     const textArr = this.splitLineText(ctx, `หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
     const egDetails = this.getDetailsTextGroup(ctx, textArr, orderEgTextSize, 'normal', orderEgFit)
@@ -245,7 +285,7 @@ class OrderPreview extends Component {
   }
 
   splitLineText(ctx, text, size, fit, weight) {
-    const maxWidth = 340
+    const maxWidth = (WIDTH / 2) - (PADDING * 2) - (paddingContentHorizontal * 2)
     let newText = ['']
     let eachWidth = 0
     let currectLine = 0
@@ -341,9 +381,7 @@ class OrderPreview extends Component {
 
   render() {
     return (
-      <div ref={node => this.div = node}>
-        <canvas ref={node => this.canvasRef = node} />
-      </div>
+      <div ref={node => this.div = node} />
     )
   }
 }

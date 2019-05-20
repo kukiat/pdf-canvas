@@ -31,3 +31,15 @@
     }
   }
 }
+
+@media print {
+  .modal-container {
+    .modal-content {
+      width: 100%;
+    }
+
+    .modal-footer {
+      display: none;
+    }
+  }
+}

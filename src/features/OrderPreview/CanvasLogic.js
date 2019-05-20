@@ -1,5 +1,6 @@
 class CanvasLogic {
-  constructor(orderList, width, height, padding, gap) {
+  constructor(width, height, padding, gap) {
+    this.possition = new Map()
     this.width = width
     this.height = height
     this.padding = padding
@@ -48,6 +49,29 @@ class CanvasLogic {
       y: this.currentQr
     }
   }
+  // updatePosition(id, data) {
+  //   const currentData = this.possition.get(id)
+  //   this.setPosition(id, {
+  //     ...currentData,
+  //     ...data
+  //   })
+  // }
+
+  // sortPage() {
+
+  // }
+
+  // setPosition(id, data) {
+  //   this.possition.set(id, data)
+  // }
+
+  // getPosition(id) {
+  //   return this.possition.get(id)
+  // }
+
+  // calculate() {
+
+  // }
 }
 
 export default CanvasLogic
