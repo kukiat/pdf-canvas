@@ -51,8 +51,10 @@ class OrderPage extends Component {
         </div>
         <OrderList orderList={orderList} />
 
-        <ModalWrapper {...modals.previewOrder}>
-          <OrderPreview orderList={orderList} />
+        <ModalWrapper modal={modals.previewOrder}>
+          <OrderPreview
+            orderList={orderList}
+          />
         </ModalWrapper>
       </div>
     )
