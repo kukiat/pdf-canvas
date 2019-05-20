@@ -17,12 +17,17 @@
     }
   }
 
-  .modal-content {
-    overflow-y: scroll !important;
-  }
+  .modal-content {}
 
   .modal-footer {
+    display: flex;
+    justify-content: space-around;
     border-top: 1px solid #dcdde1;
     padding: 10px 20px;
+
+    .btn-footer {
+      margin-right: 10px;
+      width: 350px;
+    }
   }
 }

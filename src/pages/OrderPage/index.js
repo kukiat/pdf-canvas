@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import Slider from "react-slick"
 import { orderList } from './data'
-import { Button } from 'antd'
+import { Button } from '../../commons'
 import { OrderPreview, OrderList } from '../../features'
 import { ModalWrapper } from '../../commons'
 import withModal from '../../commons/hoc/withModal'
@@ -47,8 +46,8 @@ class OrderPage extends Component {
     return (
       <div className='order-page-container'>
         <div className='button-set'>
-          <Button type="primary" onClick={this.onCreateOrder}>Add order</Button>
-          <Button type="primary" onClick={modals.previewOrder.onOpen}>Preview</Button>
+          <Button onClick={this.onCreateOrder}>Add order</Button>
+          <Button onClick={modals.previewOrder.onOpen}>Preview</Button>
         </div>
         <OrderList orderList={orderList} />
 

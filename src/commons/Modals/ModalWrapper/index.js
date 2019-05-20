@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd'
+import { Button } from '../../../commons'
 import Modal from 'react-modal';
 import styles from '../modalStyle'
 import './index.scss'
@@ -20,11 +20,14 @@ class ModalWrapper extends Component {
           <div className="modal-content">
             {this.props.children}
           </div>
-          {/* <div className="modal-footer">
-            <Button type="primary" size='large' block style={{ backgroundColor: 'green' }}>
-              พิมพ์
-          </Button>
-          </div> */}
+          <div className="modal-footer">
+            <Button className="btn-footer" onClick={alert}>
+              Download
+            </Button>
+            <Button className="btn-footer" onClick={() => { }}>
+              Print
+            </Button>
+          </div>
         </div>
       </Modal >
     );

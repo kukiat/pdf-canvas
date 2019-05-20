@@ -11,5 +11,6 @@ export default {
     width: 760,
     maxWidth: '90%',
     borderRadius: 3,
+    border: 0,
   }
 }
