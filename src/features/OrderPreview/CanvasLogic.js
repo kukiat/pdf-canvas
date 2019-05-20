@@ -1,4 +1,4 @@
-class RenderCanvas {
+class CanvasLogic {
   constructor(orderList, width, height, padding, gap) {
     this.width = width
     this.height = height
@@ -50,4 +50,4 @@ class RenderCanvas {
   }
 }
 
-export default RenderCanvas
+export default CanvasLogic

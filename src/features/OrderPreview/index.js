@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RenderCanvas from './RenderCanvas'
+import CanvasLogic from './CanvasLogic'
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
 import { isEmpty } from 'lodash'
@@ -21,7 +21,7 @@ class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
-    this.renderCanvas = new RenderCanvas(this.props.orderList, WIDTH, HEIGHT, PADDING, GAP)
+    this.canvasLogic = new CanvasLogic(this.props.orderList, WIDTH, HEIGHT, PADDING, GAP)
   }
 
   componentDidMount() {
@@ -34,7 +34,7 @@ class OrderPreview extends Component {
     ctx.canvas.width = WIDTH
     ctx.canvas.height = HEIGHT
     this.props.orderList.forEach(order => {
-      const { startX, startY } = this.renderCanvas.getCurrentPosition()
+      const { startX, startY } = this.canvasLogic.getCurrentPosition()
       this.drawCanvas(ctx, order, startX, startY)
       this.drawBarcode(order, startX, startY)
       this.drawQrcode(order)
@@ -42,7 +42,7 @@ class OrderPreview extends Component {
   }
 
   drawQrcode(order) {
-    const { x, y } = this.renderCanvas.getCheckPointQr(qrcodeAreaWidth)
+    const { x, y } = this.canvasLogic.getCheckPointQr(qrcodeAreaWidth)
     const options = {
       errorCorrectionLevel: 'H',
       width: qrcodeAreaWidth
@@ -192,7 +192,7 @@ class OrderPreview extends Component {
       size: senderNameSizeText,
     })
 
-    this.renderCanvas.setCheckPointQr(heightContent - 10)
+    this.canvasLogic.setCheckPointQr(heightContent - 10)
 
     const senderAddressText = order.sender.address.split(' ')
     const senderAddressSizeText = 12
@@ -235,7 +235,7 @@ class OrderPreview extends Component {
 
     heightContent += egDetails.height + paddingContentVertical
 
-    this.renderCanvas.setCurrentSizePosition(heightContent)
+    this.canvasLogic.setCurrentSizePosition(heightContent)
 
     const width = this.getWidthInner()
     this.drawLine(ctx, startX, startY, startX + width, startY)
