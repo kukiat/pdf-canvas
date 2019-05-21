@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import CanvasLogic from './CanvasLogic'
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
-import { isEmpty } from 'lodash'
 import { getHeigthFromRatio } from '../../libs/utils'
 
 const WIDTH = 670
@@ -12,12 +11,8 @@ const PADDING = 10
 const GAP = 10
 const FONT_FAMILY = 'verdana, sans-serif'
 
-const barcodeAreaHeight = 100
 const qrcodeAreaWidth = 88
-const headerAreaHeigth = 60
 
-const paddingContentHorizontal = 10
-const paddingContentVertical = 15
 
 class OrderPreview extends Component {
   constructor(props) {

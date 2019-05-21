@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import ReactToPrint from "react-to-print";
-import jsPDF from 'jspdf'
 import { Button } from '../../../commons'
 import Modal from 'react-modal';
 import styles from '../modalStyle'
