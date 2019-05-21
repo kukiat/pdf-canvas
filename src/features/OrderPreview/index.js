@@ -6,7 +6,7 @@ import { getHeigthFromRatio } from '../../libs/utils'
 
 const WIDTH = 670
 // const HEIGHT = getHeigthFromRatio('a4')(WIDTH)
-const HEIGHT = 3000
+const HEIGHT = 2000
 const PADDING = 10
 const GAP = 10
 const FONT_FAMILY = 'verdana, sans-serif'
@@ -25,17 +25,17 @@ class OrderPreview extends Component {
     this.draw()
   }
 
-  initCanvas() {
+  initCanvas(el, width, height) {
     const canvas = document.createElement('canvas')
-    this.div.appendChild(canvas)
+    el.appendChild(canvas)
     this.ctx = canvas.getContext('2d')
-    this.ctx.canvas.width = WIDTH
-    this.ctx.canvas.height = HEIGHT
+    this.ctx.canvas.width = width
+    this.ctx.canvas.height = height
   }
 
   draw() {
     this.canvasLogic.calculate(this.props.orderList)
-    this.initCanvas()
+    this.initCanvas(this.div, WIDTH, HEIGHT)
     this.props.orderList.forEach(order => {
       this.drawOrder(this.ctx, order)
       this.drawBarcode(order)
@@ -44,11 +44,12 @@ class OrderPreview extends Component {
   }
 
   drawQrcode(order) {
-    const { x, y } = this.canvasLogic.getPositionDetails(order.id, 'checkpointQr')
+    const { x, y } = this.canvasLogic.getPosition(order.id)['checkpointQr']
     const options = {
       errorCorrectionLevel: 'H',
       width: qrcodeAreaWidth
     }
+
     qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {
       if (err) throw err
       canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
@@ -57,7 +58,7 @@ class OrderPreview extends Component {
   }
 
   drawBarcode(order) {
-    const { x, y } = this.canvasLogic.getPositionDetails(order.id, 'checkpointBarcode')
+    const { x, y } = this.canvasLogic.getPosition(order.id)['checkpointBarcode']
 
     const canvas = document.createElement('canvas')
     canvas.setAttribute('id', `barcode${order.id}`)

@@ -74,7 +74,11 @@ class CanvasLogic {
   }
 
   sortPage() {
-
+    //10 10 | 340 10
+    let newPosition = []
+    this.position.forEach(p => {
+      console.log(p)
+    })
   }
 
   setPosition(id, data) {
@@ -99,8 +103,7 @@ class CanvasLogic {
   getWidthHeightText(size, label, weight) {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
-    ctx.canvas.width = this.weight
-    ctx.canvas.height = this.height
+
     ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
     const width = ctx.measureText(label).width
     canvas.remove()
@@ -160,231 +163,232 @@ class CanvasLogic {
 
   calculate(orderList) {
     orderList.forEach(order => {
-      const padding = 10
-      const width = this.getWidthInner()
-
-      const leftAreaHeader = Math.floor(0.65 * width)
-      const rightAreaHeader = width - leftAreaHeader
-
       const { startX, startY } = this.getCurrentPosition()
-      this.setPosition(order.id, { startX, startY })
+      this.calculateItem(order, { startX, startY }, orderList)
+    })
+  }
 
-      this.updatePosition(order.id, {
-        line1: {
-          startX: startX + padding,
-          startY: startY + barcodeAreaHeight,
-          endX: startX + width - padding,
-          endY: startY + barcodeAreaHeight,
-        }
-      })
+  calculateItem(order, { startX, startY }, orderList) {
+    const padding = 10
+    const width = this.getWidthInner()
 
-      this.updatePosition(order.id, {
-        line2: {
-          startX: startX + padding,
-          startY: startY + barcodeAreaHeight + headerAreaHeigth,
-          endX: startX + width - padding,
-          endY: startY + barcodeAreaHeight + headerAreaHeigth
-        }
-      })
+    const leftAreaHeader = Math.floor(0.65 * width)
+    const rightAreaHeader = width - leftAreaHeader
+    this.setPosition(order.id, { startX, startY })
 
-      this.updatePosition(order.id, {
-        leftAreaHeader,
-        rightAreaHeader,
-        line3: {
-          startX: startX + leftAreaHeader,
-          startY: startY + barcodeAreaHeight,
-          endX: startX + leftAreaHeader,
-          endY: startY + barcodeAreaHeight + headerAreaHeigth
-        }
-      })
+    this.updatePosition(order.id, {
+      line1: {
+        startX: startX + padding,
+        startY: startY + barcodeAreaHeight,
+        endX: startX + width - padding,
+        endY: startY + barcodeAreaHeight,
+      }
+    })
 
-      const fontSizeOrderName = 22
-      const fontSizeTextOrderName = this.getWidthHeightText(fontSizeOrderName, order.orderName, 'bold')
-      const paddingVerticalOrderName = barcodeAreaHeight + fontSizeTextOrderName.height + ((headerAreaHeigth - fontSizeTextOrderName.height) / 2)
-      const paddingHorizontalOrderName = ((leftAreaHeader - padding - fontSizeTextOrderName.width) / 2)
-      this.updatePosition(order.id, {
-        orderName: {
-          label: order.orderName,
-          x: startX + padding + paddingHorizontalOrderName,
-          y: startY + paddingVerticalOrderName,
-          size: fontSizeOrderName,
-          weight: 'bold'
-        }
-      })
+    this.updatePosition(order.id, {
+      line2: {
+        startX: startX + padding,
+        startY: startY + barcodeAreaHeight + headerAreaHeigth,
+        endX: startX + width - padding,
+        endY: startY + barcodeAreaHeight + headerAreaHeigth
+      }
+    })
 
-      const fontSizeOrderId = 16
-      const fontSizeTextOrderId = this.getWidthHeightText(fontSizeOrderId, order.orderId, 'bold')
-      const paddingVerticalOrderIdText = ((headerAreaHeigth / 2) - fontSizeTextOrderId.height) / 2
-      const paddingHorizontalOrderId = (rightAreaHeader - padding - fontSizeTextOrderId.width) / 2
-      this.updatePosition(order.id, {
-        orderId: {
-          label: order.orderId,
-          x: startX + leftAreaHeader + paddingHorizontalOrderId,
-          y: startY + barcodeAreaHeight + fontSizeTextOrderId.height + paddingVerticalOrderIdText,
-          size: fontSizeOrderId,
-          weight: 'bold'
-        }
-      })
+    this.updatePosition(order.id, {
+      leftAreaHeader,
+      rightAreaHeader,
+      line3: {
+        startX: startX + leftAreaHeader,
+        startY: startY + barcodeAreaHeight,
+        endX: startX + leftAreaHeader,
+        endY: startY + barcodeAreaHeight + headerAreaHeigth
+      }
+    })
 
-      const fontSizeOrderPage = 14
-      const orderPageText = `${Number(order.id) + 1} of ${orderList.length}`
-      const fontSizeTextOrderPage = this.getWidthHeightText(fontSizeOrderPage, orderPageText, 'normal')
-      const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - fontSizeTextOrderPage.height) / 2
-      const paddingHorizontalOrderPage = (rightAreaHeader - padding - fontSizeTextOrderPage.width) / 2
-      this.updatePosition(order.id, {
-        orderPage: {
-          label: orderPageText,
-          x: startX + leftAreaHeader + paddingHorizontalOrderPage,
-          y: startY + barcodeAreaHeight + fontSizeTextOrderPage.height + paddingVerticalOrderPageText + (headerAreaHeigth / 2),
-          size: fontSizeOrderPage,
-          weight: 'normal'
-        }
-      })
+    const fontSizeOrderName = 22
+    const fontSizeTextOrderName = this.getWidthHeightText(fontSizeOrderName, order.orderName, 'bold')
+    const paddingVerticalOrderName = barcodeAreaHeight + fontSizeTextOrderName.height + ((headerAreaHeigth - fontSizeTextOrderName.height) / 2)
+    const paddingHorizontalOrderName = ((leftAreaHeader - padding - fontSizeTextOrderName.width) / 2)
+    this.updatePosition(order.id, {
+      orderName: {
+        label: order.orderName,
+        x: startX + padding + paddingHorizontalOrderName,
+        y: startY + paddingVerticalOrderName,
+        size: fontSizeOrderName,
+        weight: 'bold'
+      }
+    })
 
-      const startXContent = startX + paddingContentHorizontal
-      const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
-      let heightContent = startYContent
+    const fontSizeOrderId = 16
+    const fontSizeTextOrderId = this.getWidthHeightText(fontSizeOrderId, order.orderId, 'bold')
+    const paddingVerticalOrderIdText = ((headerAreaHeigth / 2) - fontSizeTextOrderId.height) / 2
+    const paddingHorizontalOrderId = (rightAreaHeader - padding - fontSizeTextOrderId.width) / 2
+    this.updatePosition(order.id, {
+      orderId: {
+        label: order.orderId,
+        x: startX + leftAreaHeader + paddingHorizontalOrderId,
+        y: startY + barcodeAreaHeight + fontSizeTextOrderId.height + paddingVerticalOrderIdText,
+        size: fontSizeOrderId,
+        weight: 'bold'
+      }
+    })
 
-      const reciverNameText = [`ผู้รับ: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
-      const reciverNameSizeText = 12
-      const reciverNameFit = 20
-      const reciverNameDetails = this.getDetailsTextGroup(reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
-      heightContent += paddingContentVertical
-      this.updatePosition(order.id, {
-        reciverName: {
-          ...reciverNameDetails,
-          fit: reciverNameFit,
-          x: startXContent,
-          y: heightContent,
-          size: reciverNameSizeText,
-          weight: 'bold'
-        }
-      })
+    const fontSizeOrderPage = 14
+    const orderPageText = `${Number(order.id) + 1} of ${orderList.length}`
+    const fontSizeTextOrderPage = this.getWidthHeightText(fontSizeOrderPage, orderPageText, 'normal')
+    const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - fontSizeTextOrderPage.height) / 2
+    const paddingHorizontalOrderPage = (rightAreaHeader - padding - fontSizeTextOrderPage.width) / 2
+    this.updatePosition(order.id, {
+      orderPage: {
+        label: orderPageText,
+        x: startX + leftAreaHeader + paddingHorizontalOrderPage,
+        y: startY + barcodeAreaHeight + fontSizeTextOrderPage.height + paddingVerticalOrderPageText + (headerAreaHeigth / 2),
+        size: fontSizeOrderPage,
+        weight: 'normal'
+      }
+    })
 
-      const reciverAddressText = order.reciver.address.split(' ')
-      const reciverAddressSizeText = 12
-      const reciverAddressFit = 18
-      const reciverAddressDetails = this.getDetailsTextGroup(reciverAddressText, reciverAddressSizeText, 'bold', reciverAddressFit)
-      heightContent += reciverNameDetails.height + 10
-      this.updatePosition(order.id, {
-        reciverAddress: {
-          ...reciverAddressDetails,
-          fit: reciverAddressFit,
-          x: startXContent,
-          y: heightContent,
-          size: reciverAddressSizeText,
-          weight: 'bold'
-        }
-      })
+    const startXContent = startX + paddingContentHorizontal
+    const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
+    let heightContent = startYContent
 
-      const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
-      const senderNameSizeText = 10
-      const senderNameFit = 16
-      const senderNameDetails = this.getDetailsTextGroup(senderNameText, senderNameSizeText, 'normal', senderNameFit, qrcodeAreaWidth)
-      heightContent += reciverAddressDetails.height + 20
-      this.updatePosition(order.id, {
-        senderName: {
-          ...senderNameDetails,
-          fit: senderNameFit,
-          x: startXContent,
-          y: heightContent,
-          size: senderNameSizeText,
-        }
-      })
+    const reciverNameText = [`ผู้รับ: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
+    const reciverNameSizeText = 12
+    const reciverNameFit = 20
+    const reciverNameDetails = this.getDetailsTextGroup(reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
+    heightContent += paddingContentVertical
+    this.updatePosition(order.id, {
+      reciverName: {
+        ...reciverNameDetails,
+        fit: reciverNameFit,
+        x: startXContent,
+        y: heightContent,
+        size: reciverNameSizeText,
+        weight: 'bold'
+      }
+    })
 
-      this.updatePosition(order.id, {
-        checkpointQr: this.getCheckPointQr(heightContent - 10)
-      })
+    const reciverAddressText = order.reciver.address.split(' ')
+    const reciverAddressSizeText = 12
+    const reciverAddressFit = 18
+    const reciverAddressDetails = this.getDetailsTextGroup(reciverAddressText, reciverAddressSizeText, 'bold', reciverAddressFit)
+    heightContent += reciverNameDetails.height + 10
+    this.updatePosition(order.id, {
+      reciverAddress: {
+        ...reciverAddressDetails,
+        fit: reciverAddressFit,
+        x: startXContent,
+        y: heightContent,
+        size: reciverAddressSizeText,
+        weight: 'bold'
+      }
+    })
 
-      const senderAddressText = order.sender.address.split(' ')
-      const senderAddressSizeText = 10
-      const senderAddressFit = 16
-      const senderAddressDetails = this.getDetailsTextGroup(senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, qrcodeAreaWidth)
-      heightContent += senderNameDetails.height + 10
-      this.updatePosition(order.id, {
-        senderAddress: {
-          ...senderAddressDetails,
-          fit: senderAddressFit,
-          x: startXContent,
-          y: heightContent,
-          size: senderAddressSizeText,
-        }
-      })
+    const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
+    const senderNameSizeText = 10
+    const senderNameFit = 16
+    const senderNameDetails = this.getDetailsTextGroup(senderNameText, senderNameSizeText, 'normal', senderNameFit, qrcodeAreaWidth)
+    heightContent += reciverAddressDetails.height + 20
+    this.updatePosition(order.id, {
+      senderName: {
+        ...senderNameDetails,
+        fit: senderNameFit,
+        x: startXContent,
+        y: heightContent,
+        size: senderNameSizeText,
+      }
+    })
 
-      const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
-      const orderDetailsTextSize = 10
-      const orderDetailsFit = 16
-      const orderDetails = this.getDetailsTextGroup(orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
-      heightContent += senderAddressDetails.height + 20
-      this.updatePosition(order.id, {
-        orderDetails: {
-          ...orderDetails,
-          fit: orderDetailsFit,
-          x: startXContent,
-          y: heightContent,
-          size: orderDetailsTextSize,
-        }
-      })
+    this.updatePosition(order.id, {
+      checkpointQr: this.getCheckPointQr(heightContent - 10)
+    })
 
-      const orderEgTextSize = 10
-      const orderEgFit = 16
-      const textArr = this.splitLineText(`หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
-      console.log(textArr)
-      const egDetails = this.getDetailsTextGroup(textArr, orderEgTextSize, 'normal', orderEgFit)
-      heightContent += orderDetails.height + 20
-      this.updatePosition(order.id, {
-        orderEg: {
-          ...egDetails,
-          fit: orderEgFit,
-          x: startXContent,
-          y: heightContent,
-          size: orderEgTextSize,
-        }
-      })
+    const senderAddressText = order.sender.address.split(' ')
+    const senderAddressSizeText = 10
+    const senderAddressFit = 16
+    const senderAddressDetails = this.getDetailsTextGroup(senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, qrcodeAreaWidth)
+    heightContent += senderNameDetails.height + 10
+    this.updatePosition(order.id, {
+      senderAddress: {
+        ...senderAddressDetails,
+        fit: senderAddressFit,
+        x: startXContent,
+        y: heightContent,
+        size: senderAddressSizeText,
+      }
+    })
 
-      heightContent += egDetails.height + paddingContentVertical
+    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
+    const orderDetailsTextSize = 10
+    const orderDetailsFit = 16
+    const orderDetails = this.getDetailsTextGroup(orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
+    heightContent += senderAddressDetails.height + 20
+    this.updatePosition(order.id, {
+      orderDetails: {
+        ...orderDetails,
+        fit: orderDetailsFit,
+        x: startXContent,
+        y: heightContent,
+        size: orderDetailsTextSize,
+      }
+    })
 
-      this.setCurrentSizePosition(heightContent)
+    const orderEgTextSize = 10
+    const orderEgFit = 16
+    const textArr = this.splitLineText(`หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
+    const egDetails = this.getDetailsTextGroup(textArr, orderEgTextSize, 'normal', orderEgFit)
+    heightContent += orderDetails.height + 20
+    this.updatePosition(order.id, {
+      orderEg: {
+        ...egDetails,
+        fit: orderEgFit,
+        x: startXContent,
+        y: heightContent,
+        size: orderEgTextSize,
+      }
+    })
 
-      this.updatePosition(order.id, {
-        lineTop: {
-          startX,
-          startY,
-          endX: startX + width,
-          endY: startY
-        }
-      })
-      this.updatePosition(order.id, {
-        lineLeft: {
-          startX,
-          startY,
-          endX: startX,
-          endY: heightContent
-        }
-      })
+    heightContent += egDetails.height + paddingContentVertical
 
-      this.updatePosition(order.id, {
-        lineRight: {
-          startX: startX + width,
-          startY,
-          endX: startX + width,
-          endY: heightContent
-        }
-      })
+    this.setCurrentSizePosition(heightContent)
 
-      this.updatePosition(order.id, {
-        lineBottom: {
-          startX: startX,
-          startY: heightContent,
-          endX: startX + width,
-          endY: heightContent
-        }
-      })
+    this.updatePosition(order.id, {
+      lineTop: {
+        startX,
+        startY,
+        endX: startX + width,
+        endY: startY
+      }
+    })
+    this.updatePosition(order.id, {
+      lineLeft: {
+        startX,
+        startY,
+        endX: startX,
+        endY: heightContent
+      }
+    })
 
-      this.updatePosition(order.id, {
-        checkpointBarcode: this.convertPositionBarCode(startX, startY)
-      })
+    this.updatePosition(order.id, {
+      lineRight: {
+        startX: startX + width,
+        startY,
+        endX: startX + width,
+        endY: heightContent
+      }
+    })
 
+    this.updatePosition(order.id, {
+      lineBottom: {
+        startX: startX,
+        startY: heightContent,
+        endX: startX + width,
+        endY: heightContent
+      }
+    })
+
+    this.updatePosition(order.id, {
+      checkpointBarcode: this.convertPositionBarCode(startX, startY)
     })
   }
 }
