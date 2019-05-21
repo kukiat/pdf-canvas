@@ -78,53 +78,32 @@ class OrderPreview extends Component {
   }
 
   drawOrder(ctx, order) {
-    const line1 = this.canvasLogic.getPositionDetails(order.id, 'line1')
-    this.drawLine(ctx, line1)
+    const position = this.canvasLogic.getPosition(order.id)
 
-    const line2 = this.canvasLogic.getPositionDetails(order.id, 'line2')
-    this.drawLine(ctx, line2)
+    this.drawLine(ctx, position['line1'])
+    this.drawLine(ctx, position['line2'])
+    this.drawLine(ctx, position['line3'])
 
-    const line3 = this.canvasLogic.getPositionDetails(order.id, 'line3')
-    this.drawLine(ctx, line3)
+    this.drawText(ctx, position['orderName'])
+    this.drawText(ctx, position['orderId'])
+    this.drawText(ctx, position['orderPage'])
 
-    const orderName = this.canvasLogic.getPositionDetails(order.id, 'orderName')
-    this.drawText(ctx, orderName)
+    this.drawTextGroup(ctx, position['reciverName'])
+    this.drawTextGroup(ctx, position['reciverAddress'])
 
-    const orderId = this.canvasLogic.getPositionDetails(order.id, 'orderId')
-    this.drawText(ctx, orderId)
+    this.drawTextGroup(ctx, position['senderName'])
+    this.drawTextGroup(ctx, position['senderAddress'])
 
-    const orderPage = this.canvasLogic.getPositionDetails(order.id, 'orderPage')
-    this.drawText(ctx, orderPage)
+    this.drawTextGroup(ctx, position['orderDetails'])
 
-    const reciverName = this.canvasLogic.getPositionDetails(order.id, 'reciverName')
-    this.drawTextGroup(ctx, reciverName)
+    this.drawTextGroup(ctx, position['orderEg'])
 
-    const reciverAddress = this.canvasLogic.getPositionDetails(order.id, 'reciverAddress')
-    this.drawTextGroup(ctx, reciverAddress)
+    this.drawLine(ctx, position['lineTop'])
+    this.drawLine(ctx, position['lineRight'])
+    this.drawLine(ctx, position['lineLeft'])
+    this.drawLine(ctx, position['lineBottom'])
 
-    const senderName = this.canvasLogic.getPositionDetails(order.id, 'senderName')
-    this.drawTextGroup(ctx, senderName)
 
-    const senderAddress = this.canvasLogic.getPositionDetails(order.id, 'senderAddress')
-    this.drawTextGroup(ctx, senderAddress)
-
-    const orderDetails = this.canvasLogic.getPositionDetails(order.id, 'orderDetails')
-    this.drawTextGroup(ctx, orderDetails)
-
-    const orderEg = this.canvasLogic.getPositionDetails(order.id, 'orderEg')
-    this.drawTextGroup(ctx, orderEg)
-
-    const lineTop = this.canvasLogic.getPositionDetails(order.id, 'lineTop')
-    this.drawLine(ctx, lineTop)
-
-    const lineBottom = this.canvasLogic.getPositionDetails(order.id, 'lineBottom')
-    this.drawLine(ctx, lineBottom)
-
-    const lineLeft = this.canvasLogic.getPositionDetails(order.id, 'lineLeft')
-    this.drawLine(ctx, lineLeft)
-
-    const lineRight = this.canvasLogic.getPositionDetails(order.id, 'lineRight')
-    this.drawLine(ctx, lineRight)
   }
 
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
