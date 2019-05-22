@@ -1,0 +1,9 @@
+export const WIDTH = 670
+export const PADDING = 10
+export const GAP = 10
+export const QRCODE_WIDTH = 88
+export const FONT_FAMILY = 'verdana, sans-serif'
+export const PADDING_CONTENT_HORIZONTAL = 10
+export const PADDING_CONTENT_VERTICAL = 10
+export const BARCODE_HEIGHT = 100
+export const HEADDER_HEIGHT = 60

@@ -1,24 +1,20 @@
 import React, { Component } from 'react'
-import CanvasLogic from './CanvasLogic'
+import CanvasLogic from './canvas/CanvasLogic'
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
-import { getHeigthFromRatio } from '../../libs/utils'
-
-const WIDTH = 670
-// const HEIGHT = getHeigthFromRatio('a4')(WIDTH)
-const HEIGHT = 2000
-const PADDING = 10
-const GAP = 10
-const FONT_FAMILY = 'verdana, sans-serif'
-
-const qrcodeAreaWidth = 88
-
+import {
+  FONT_FAMILY,
+  GAP,
+  PADDING,
+  WIDTH,
+  QRCODE_WIDTH
+} from './canvas/config'
 
 class OrderPreview extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = null
-    this.canvasLogic = new CanvasLogic(WIDTH, HEIGHT, PADDING, GAP)
+    this.canvasLogic = new CanvasLogic(WIDTH, PADDING, GAP)
   }
 
   componentDidMount() {
@@ -28,16 +24,19 @@ class OrderPreview extends Component {
   initCanvas(el, width, height) {
     const canvas = document.createElement('canvas')
     el.appendChild(canvas)
-    this.ctx = canvas.getContext('2d')
-    this.ctx.canvas.width = width
-    this.ctx.canvas.height = height
+    const ctx = canvas.getContext('2d')
+    ctx.canvas.width = width
+    ctx.canvas.height = height
+    return ctx
   }
 
   draw() {
     this.canvasLogic.calculate(this.props.orderList)
-    this.initCanvas(this.div, WIDTH, HEIGHT)
+    const { width, height } = this.canvasLogic.getPageSize()
+    const ctx = this.initCanvas(this.div, width, height)
+
     this.props.orderList.forEach(order => {
-      this.drawOrder(this.ctx, order)
+      this.drawOrder(ctx, order)
       this.drawBarcode(order)
       this.drawQrcode(order)
     })
@@ -47,7 +46,7 @@ class OrderPreview extends Component {
     const { x, y } = this.canvasLogic.getPosition(order.id)['checkpointQr']
     const options = {
       errorCorrectionLevel: 'H',
-      width: qrcodeAreaWidth
+      width: QRCODE_WIDTH
     }
 
     qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {

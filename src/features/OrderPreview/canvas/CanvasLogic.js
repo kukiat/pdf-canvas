@@ -1,17 +1,19 @@
 import { isEmpty } from 'lodash'
+import { getHeigthFromRatio } from '../../../libs/utils'
+import {
+  FONT_FAMILY,
+  HEADDER_HEIGHT,
+  BARCODE_HEIGHT,
+  PADDING_CONTENT_HORIZONTAL,
+  PADDING_CONTENT_VERTICAL,
+  QRCODE_WIDTH
+} from './config'
 
-const FONT_FAMILY = 'verdana, sans-serif'
-const paddingContentHorizontal = 10
-const paddingContentVertical = 15
-
-const barcodeAreaHeight = 100
-const qrcodeAreaWidth = 88
-const headerAreaHeigth = 60
 class CanvasLogic {
-  constructor(width, height, padding, gap) {
+  constructor(width, padding, gap) {
     this.position = new Map()
+    this.page = 1
     this.width = width
-    this.height = height
     this.padding = padding
     this.gap = gap
     this.left = 0
@@ -50,14 +52,14 @@ class CanvasLogic {
     const width = this.getWidthInner()
     return {
       x: (width - 242) / 2 + x,
-      y: (barcodeAreaHeight - 72) / 2 + y
+      y: (BARCODE_HEIGHT - 72) / 2 + y
     }
   }
 
-  getCheckPointQr(currentHeight) {
-    const area = this.currentSide === 'left' ? this.width / 2 : this.width
+  getCheckPointQr(x, y, currentHeight) {
+    const area = (this.width - (this.padding * 2) - this.gap) / 2
     return {
-      x: area - (qrcodeAreaWidth + this.gap + this.padding),
+      x: x + area - QRCODE_WIDTH - PADDING_CONTENT_HORIZONTAL,
       y: currentHeight
     }
   }
@@ -74,11 +76,48 @@ class CanvasLogic {
   }
 
   sortPage() {
-    //10 10 | 340 10
-    let newPosition = []
-    this.position.forEach(p => {
-      console.log(p)
+    let position = []
+    this.position.forEach((p, i) => {
+      position.push({
+        height: p.height,
+        startX: p.startX,
+        startY: p.startY
+      })
     })
+    const maxHeight = 947
+    let newPosition = []
+    let left = 0
+    let right = 0
+    let page = 1
+    const initX = (p) => (maxHeight * (p - 1) + 10)
+    for (let i = 0; i < position.length; i++) {
+      const height = position[i].height
+      if (left + height < maxHeight || right + height < maxHeight) {
+        if (left > right) {
+          newPosition.push({
+            startX: 340,
+            startY: initX(page) + right
+          })
+          right += height
+        } else {
+          newPosition.push({
+            startX: 10,
+            startY: initX(page) + left
+          })
+          left += height
+        }
+      } else {
+        left = height
+        right = 0
+        page += 1
+        newPosition.push({
+          startX: 10,
+          startY: initX(page)
+        })
+      }
+    }
+    this.page = page
+    return newPosition
   }
 
   setPosition(id, data) {
@@ -86,6 +125,13 @@ class CanvasLogic {
       side: this.currentSide,
       ...data
     })
+  }
+
+  getPageSize() {
+    return {
+      width: this.width,
+      height: getHeigthFromRatio('a4')(this.width) * this.page
+    }
   }
 
   getPosition(id) {
@@ -114,7 +160,7 @@ class CanvasLogic {
   }
 
   getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0) {
-    const maxWidth = ((this.width - (this.padding * 2) - this.gap) / 2) - (paddingContentHorizontal * 2) - areaWidth
+    const maxWidth = ((this.width - (this.padding * 2) - this.gap) / 2) - (PADDING_CONTENT_HORIZONTAL * 2) - areaWidth
     let widthTemp = 0
     let totalText = []
     let totalHeight = 0
@@ -143,7 +189,7 @@ class CanvasLogic {
   }
 
   splitLineText(text, size, fit, weight) {
-    const maxWidth = (this.width / 2) - (this.padding * 2) - (paddingContentHorizontal * 2)
+    const maxWidth = (this.width / 2) - (this.padding * 2) - (PADDING_CONTENT_HORIZONTAL * 2)
     let newText = ['']
     let eachWidth = 0
     let currectLine = 0
@@ -166,6 +212,10 @@ class CanvasLogic {
       const { startX, startY } = this.getCurrentPosition()
       this.calculateItem(order, { startX, startY }, orderList)
     })
+    const newPosition = this.sortPage()
+    newPosition.forEach((p, index) => {
+      this.calculateItem(orderList[index], p, orderList)
+    })
   }
 
   calculateItem(order, { startX, startY }, orderList) {
@@ -179,18 +229,18 @@ class CanvasLogic {
     this.updatePosition(order.id, {
       line1: {
         startX: startX + padding,
-        startY: startY + barcodeAreaHeight,
+        startY: startY + BARCODE_HEIGHT,
         endX: startX + width - padding,
-        endY: startY + barcodeAreaHeight,
+        endY: startY + BARCODE_HEIGHT,
       }
     })
 
     this.updatePosition(order.id, {
       line2: {
         startX: startX + padding,
-        startY: startY + barcodeAreaHeight + headerAreaHeigth,
+        startY: startY + BARCODE_HEIGHT + HEADDER_HEIGHT,
         endX: startX + width - padding,
-        endY: startY + barcodeAreaHeight + headerAreaHeigth
+        endY: startY + BARCODE_HEIGHT + HEADDER_HEIGHT
       }
     })
 
@@ -199,15 +249,15 @@ class CanvasLogic {
       rightAreaHeader,
       line3: {
         startX: startX + leftAreaHeader,
-        startY: startY + barcodeAreaHeight,
+        startY: startY + BARCODE_HEIGHT,
         endX: startX + leftAreaHeader,
-        endY: startY + barcodeAreaHeight + headerAreaHeigth
+        endY: startY + BARCODE_HEIGHT + HEADDER_HEIGHT
       }
     })
 
     const fontSizeOrderName = 22
     const fontSizeTextOrderName = this.getWidthHeightText(fontSizeOrderName, order.orderName, 'bold')
-    const paddingVerticalOrderName = barcodeAreaHeight + fontSizeTextOrderName.height + ((headerAreaHeigth - fontSizeTextOrderName.height) / 2)
+    const paddingVerticalOrderName = BARCODE_HEIGHT + fontSizeTextOrderName.height + ((HEADDER_HEIGHT - fontSizeTextOrderName.height) / 2)
     const paddingHorizontalOrderName = ((leftAreaHeader - padding - fontSizeTextOrderName.width) / 2)
     this.updatePosition(order.id, {
       orderName: {
@@ -221,13 +271,13 @@ class CanvasLogic {
 
     const fontSizeOrderId = 16
     const fontSizeTextOrderId = this.getWidthHeightText(fontSizeOrderId, order.orderId, 'bold')
-    const paddingVerticalOrderIdText = ((headerAreaHeigth / 2) - fontSizeTextOrderId.height) / 2
+    const paddingVerticalOrderIdText = ((HEADDER_HEIGHT / 2) - fontSizeTextOrderId.height) / 2
     const paddingHorizontalOrderId = (rightAreaHeader - padding - fontSizeTextOrderId.width) / 2
     this.updatePosition(order.id, {
       orderId: {
         label: order.orderId,
         x: startX + leftAreaHeader + paddingHorizontalOrderId,
-        y: startY + barcodeAreaHeight + fontSizeTextOrderId.height + paddingVerticalOrderIdText,
+        y: startY + BARCODE_HEIGHT + fontSizeTextOrderId.height + paddingVerticalOrderIdText,
         size: fontSizeOrderId,
         weight: 'bold'
       }
@@ -236,27 +286,27 @@ class CanvasLogic {
     const fontSizeOrderPage = 14
     const orderPageText = `${Number(order.id) + 1} of ${orderList.length}`
     const fontSizeTextOrderPage = this.getWidthHeightText(fontSizeOrderPage, orderPageText, 'normal')
-    const paddingVerticalOrderPageText = ((headerAreaHeigth / 2) - fontSizeTextOrderPage.height) / 2
+    const paddingVerticalOrderPageText = ((HEADDER_HEIGHT / 2) - fontSizeTextOrderPage.height) / 2
     const paddingHorizontalOrderPage = (rightAreaHeader - padding - fontSizeTextOrderPage.width) / 2
     this.updatePosition(order.id, {
       orderPage: {
         label: orderPageText,
         x: startX + leftAreaHeader + paddingHorizontalOrderPage,
-        y: startY + barcodeAreaHeight + fontSizeTextOrderPage.height + paddingVerticalOrderPageText + (headerAreaHeigth / 2),
+        y: startY + BARCODE_HEIGHT + fontSizeTextOrderPage.height + paddingVerticalOrderPageText + (HEADDER_HEIGHT / 2),
         size: fontSizeOrderPage,
         weight: 'normal'
       }
     })
 
-    const startXContent = startX + paddingContentHorizontal
-    const startYContent = startY + barcodeAreaHeight + headerAreaHeigth
+    const startXContent = startX + PADDING_CONTENT_HORIZONTAL
+    const startYContent = startY + BARCODE_HEIGHT + HEADDER_HEIGHT
     let heightContent = startYContent
 
     const reciverNameText = [`ผู้รับ: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
     const reciverNameSizeText = 12
     const reciverNameFit = 20
     const reciverNameDetails = this.getDetailsTextGroup(reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
-    heightContent += paddingContentVertical
+    heightContent += PADDING_CONTENT_VERTICAL
     this.updatePosition(order.id, {
       reciverName: {
         ...reciverNameDetails,
@@ -287,7 +337,7 @@ class CanvasLogic {
     const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
     const senderNameSizeText = 10
     const senderNameFit = 16
-    const senderNameDetails = this.getDetailsTextGroup(senderNameText, senderNameSizeText, 'normal', senderNameFit, qrcodeAreaWidth)
+    const senderNameDetails = this.getDetailsTextGroup(senderNameText, senderNameSizeText, 'normal', senderNameFit, QRCODE_WIDTH)
     heightContent += reciverAddressDetails.height + 20
     this.updatePosition(order.id, {
       senderName: {
@@ -300,13 +350,13 @@ class CanvasLogic {
     })
 
     this.updatePosition(order.id, {
-      checkpointQr: this.getCheckPointQr(heightContent - 10)
+      checkpointQr: this.getCheckPointQr(startX, startY, heightContent - 10)
     })
 
     const senderAddressText = order.sender.address.split(' ')
     const senderAddressSizeText = 10
     const senderAddressFit = 16
-    const senderAddressDetails = this.getDetailsTextGroup(senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, qrcodeAreaWidth)
+    const senderAddressDetails = this.getDetailsTextGroup(senderAddressText, senderAddressSizeText, 'normal', senderAddressFit, QRCODE_WIDTH)
     heightContent += senderNameDetails.height + 10
     this.updatePosition(order.id, {
       senderAddress: {
@@ -321,7 +371,7 @@ class CanvasLogic {
     const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
     const orderDetailsTextSize = 10
     const orderDetailsFit = 16
-    const orderDetails = this.getDetailsTextGroup(orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, qrcodeAreaWidth)
+    const orderDetails = this.getDetailsTextGroup(orderDetailsText, orderDetailsTextSize, 'normal', orderDetailsFit, QRCODE_WIDTH)
     heightContent += senderAddressDetails.height + 20
     this.updatePosition(order.id, {
       orderDetails: {
@@ -348,7 +398,7 @@ class CanvasLogic {
       }
     })
 
-    heightContent += egDetails.height + paddingContentVertical
+    heightContent += egDetails.height + PADDING_CONTENT_VERTICAL
 
     this.setCurrentSizePosition(heightContent)
 
@@ -389,6 +439,11 @@ class CanvasLogic {
 
     this.updatePosition(order.id, {
       checkpointBarcode: this.convertPositionBarCode(startX, startY)
+    })
+
+    this.updatePosition(order.id, {
+      height: heightContent - startY + PADDING_CONTENT_VERTICAL,
+      width
     })
   }
 }
