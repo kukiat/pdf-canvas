@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import CanvasLogic from './canvas/CanvasLogic'
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
+import CanvasLogic from '../canvas/CanvasLogic'
 import {
   FONT_FAMILY,
   GAP,
   PADDING,
   WIDTH,
   QRCODE_WIDTH
-} from './canvas/config'
+} from '../canvas/config'
 
 class OrderPreview extends Component {
   constructor(props) {
@@ -102,8 +102,6 @@ class OrderPreview extends Component {
     this.drawLine(ctx, position['lineRight'])
     this.drawLine(ctx, position['lineLeft'])
     this.drawLine(ctx, position['lineBottom'])
-
-
   }
 
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {

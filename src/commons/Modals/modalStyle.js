@@ -1,3 +1,5 @@
+import { WIDTH } from '../../features/canvas/config'
+
 export default {
   overlay: {
     backgroundColor: 'rgba(51, 51, 51, 0.6)',
@@ -8,7 +10,7 @@ export default {
     right: '0',
     margin: '0 auto',
     padding: 0,
-    width: 670,
+    width: WIDTH,
     borderRadius: 3,
     border: 0,
   }

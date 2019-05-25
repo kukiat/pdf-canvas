@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { getHeigthFromRatio } from '../../../libs/utils'
+import { getHeigthFromRatio } from '../../libs/utils'
 import {
   FONT_FAMILY,
   HEADDER_HEIGHT,
@@ -63,6 +63,7 @@ class CanvasLogic {
       y: currentHeight
     }
   }
+
   updatePosition(id, data) {
     const currentData = this.position.get(id)
     this.setPosition(id, {
@@ -77,31 +78,31 @@ class CanvasLogic {
 
   sortPage() {
     let position = []
-    this.position.forEach((p, i) => {
-      position.push({
-        height: p.height,
-        startX: p.startX,
-        startY: p.startY
-      })
-    })
-    const maxHeight = 947
+    this.position.forEach(p => position.push({
+      height: p.height,
+      startX: p.startX,
+      startY: p.startY
+    }))
+
+    const maxHeight = getHeigthFromRatio('a4')(this.width)
     let newPosition = []
     let left = 0
     let right = 0
     let page = 1
     const initX = (p) => (maxHeight * (p - 1) + 10)
+
     for (let i = 0; i < position.length; i++) {
       const height = position[i].height
       if (left + height < maxHeight || right + height < maxHeight) {
         if (left > right) {
           newPosition.push({
-            startX: 340,
+            startX: this.padding + (this.width - this.gap) / 2,
             startY: initX(page) + right
           })
           right += height
         } else {
           newPosition.push({
-            startX: 10,
+            startX: this.padding,
             startY: initX(page) + left
           })
           left += height

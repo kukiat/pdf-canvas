@@ -1,4 +1,4 @@
-export const WIDTH = 670
+export const WIDTH = 700
 export const PADDING = 10
 export const GAP = 10
 export const QRCODE_WIDTH = 88
