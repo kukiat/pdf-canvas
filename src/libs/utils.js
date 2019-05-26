@@ -1,6 +1,4 @@
-import { isEmpty } from 'lodash'
-
-export const getHeigthFromRatio = (type) => (width) => {
+export const getHeigthFromRatio = type => width => {
   switch (type) {
     case 'a4':
       const height = (width / 2480) * 3508
@@ -20,7 +18,7 @@ export const getWidthHeightText = (size, label, weight, font) => {
   canvas.remove()
   return {
     width,
-    height: size - (0.2 * size),
+    height: size - 0.2 * size
   }
 }
 
@@ -29,7 +27,7 @@ export const calculatePage = (position, maxHeight, startXLeft, startYRight) => {
   let left = 0
   let right = 0
   let page = 1
-  const initX = (p) => (maxHeight * (p - 1) + 10)
+  const initX = p => maxHeight * (p - 1) + 10
 
   for (let i = 0; i < position.length; i++) {
     const height = position[i].height

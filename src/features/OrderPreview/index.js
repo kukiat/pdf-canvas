@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import CanvasLogic from '../canvas/CanvasLogic'
 import CanvasRenderer from '../canvas/CanvasRenderer'
-import {
-  GAP,
-  PADDING,
-  WIDTH,
-} from '../canvas/config'
+import { GAP, PADDING, WIDTH } from '../canvas/config'
 
 class OrderPreview extends Component {
   constructor(props) {
@@ -33,9 +29,7 @@ class OrderPreview extends Component {
   }
 
   render() {
-    return (
-      <div ref={node => this.div = node} />
-    )
+    return <div ref={node => (this.div = node)} />
   }
 }
 

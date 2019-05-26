@@ -42,8 +42,8 @@ class CanvasRenderer {
     this.div.insertBefore(canvas, this.div.lastChild)
 
     JsBarcode(`#barcode${order.id}`, order.barcode, {
-      format: "CODE128B",
-      lineColor: "#000",
+      format: 'CODE128B',
+      lineColor: '#000',
       width: 1,
       height: 35,
       displayValue: true,
@@ -57,7 +57,7 @@ class CanvasRenderer {
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
     totalText.forEach((label, index) => {
       const { height } = getWidthHeightText(size, label, weight)
-      const margin = height + (index * fit)
+      const margin = height + index * fit
       this.drawText(ctx, { label, x, y: y + margin, size, weight })
     })
   }
@@ -69,7 +69,7 @@ class CanvasRenderer {
 
   drawLine(ctx, { startX, startY, endX, endY }) {
     ctx.beginPath()
-    ctx.strokeStyle = "#000"
+    ctx.strokeStyle = '#000'
     ctx.lineWidth = 1
     ctx.moveTo(startX, startY)
     ctx.lineTo(endX, endY)

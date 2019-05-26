@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { orderList } from './data'
 import { Button } from '../../commons'
 import { OrderPreview, OrderList } from '../../features'
-import { ModalWrapper } from '../../commons'
+import { ModalPreview } from '../../commons'
 import withModal from '../../commons/hoc/withModal'
 import './index.scss'
 
@@ -35,7 +35,7 @@ class OrderPage extends Component {
         date: '16/01/1996 13:31',
         type: 'Envelop',
         weight: '0.07 g',
-        eg: '555In the draw for the round of 16, the eight group winners are seeded, and the eight group runners-up are unseeded. The seeded teams are'
+        eg: '555In the draw for the round of 16'
       })
     })
   }
@@ -51,11 +51,9 @@ class OrderPage extends Component {
         </div>
         <OrderList orderList={orderList} />
 
-        <ModalWrapper modal={modals.previewOrder}>
-          <OrderPreview
-            orderList={orderList}
-          />
-        </ModalWrapper>
+        <ModalPreview modal={modals.previewOrder}>
+          <OrderPreview orderList={orderList} />
+        </ModalPreview>
       </div>
     )
   }

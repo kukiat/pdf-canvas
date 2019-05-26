@@ -1,5 +1,5 @@
-import ModalWrapper from './ModalWrapper'
+import ModalPreview from './ModalPreview'
 
 export {
-  ModalWrapper
+  ModalPreview
 }

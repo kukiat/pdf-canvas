@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component } from 'react'
 
 class ModalLogic extends Component {
   state = {
@@ -6,11 +6,11 @@ class ModalLogic extends Component {
   }
 
   onOpen = () => {
-    this.setState({ isOpen: true });
+    this.setState({ isOpen: true })
   }
 
   onClose = () => {
-    this.setState({ isOpen: false });
+    this.setState({ isOpen: false })
   }
 
   render() {
@@ -19,7 +19,7 @@ class ModalLogic extends Component {
     return children({
       isOpen,
       onOpen: this.onOpen,
-      onClose: this.onClose,
+      onClose: this.onClose
     })
   }
 }

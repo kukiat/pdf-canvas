@@ -1,5 +1,3 @@
 import OrderPage from './OrderPage'
 
-export {
-  OrderPage
-}
+export { OrderPage }
