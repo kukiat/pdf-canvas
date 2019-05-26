@@ -1,7 +1,7 @@
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
 import { FONT_FAMILY, QRCODE_WIDTH } from './config'
-import { getHeigthFromRatio, getWidthHeightText } from '../../libs/utils'
+import { getWidthHeightText } from '../../libs/utils'
 
 class CanvasRenderer {
   constructor() {

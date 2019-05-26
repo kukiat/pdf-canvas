@@ -1,5 +1,9 @@
 import { isEmpty } from 'lodash'
-import { getHeigthFromRatio, getWidthHeightText } from '../../libs/utils'
+import {
+  getHeigthFromRatio,
+  getWidthHeightText,
+  calculatePage,
+} from '../../libs/utils'
 import {
   FONT_FAMILY,
   HEADDER_HEIGHT,
@@ -22,11 +26,8 @@ class CanvasLogic {
   }
 
   changePosition() {
-    if (this.left > this.right) {
-      this.currentSide = 'right'
-    } else {
-      this.currentSide = 'left'
-    }
+    const side = this.left > this.right ? 'right' : 'left'
+    this.currentSide = side
   }
 
   setCurrentSizePosition(size) {
@@ -57,9 +58,9 @@ class CanvasLogic {
   }
 
   getCheckPointQr(x, y, currentHeight) {
-    const area = (this.width - (this.padding * 2) - this.gap) / 2
+    const width = this.getWidthInner()
     return {
-      x: x + area - QRCODE_WIDTH - PADDING_CONTENT_HORIZONTAL,
+      x: x + width - QRCODE_WIDTH - PADDING_CONTENT_HORIZONTAL,
       y: currentHeight
     }
   }
@@ -73,7 +74,7 @@ class CanvasLogic {
   }
 
   getWidthInner() {
-    return ((this.width - (this.padding * 2) - this.gap) / 2)
+    return (this.width - (this.padding * 2) - this.gap) / 2
   }
 
   sortPage() {
@@ -85,38 +86,9 @@ class CanvasLogic {
     }))
 
     const maxHeight = getHeigthFromRatio('a4')(this.width)
-    let newPosition = []
-    let left = 0
-    let right = 0
-    let page = 1
-    const initX = (p) => (maxHeight * (p - 1) + 10)
-
-    for (let i = 0; i < position.length; i++) {
-      const height = position[i].height
-      if (left + height < maxHeight || right + height < maxHeight) {
-        if (left > right) {
-          newPosition.push({
-            startX: this.padding + (this.width - this.gap) / 2,
-            startY: initX(page) + right
-          })
-          right += height
-        } else {
-          newPosition.push({
-            startX: this.padding,
-            startY: initX(page) + left
-          })
-          left += height
-        }
-      } else {
-        left = height
-        right = 0
-        page += 1
-        newPosition.push({
-          startX: 10,
-          startY: initX(page)
-        })
-      }
-    }
+    const startXLeft = this.padding
+    const startXRight = this.padding + (this.width - this.gap) / 2
+    const { page, newPosition } = calculatePage(position, maxHeight, startXLeft, startXRight)
     this.page = page
     return newPosition
   }
@@ -144,7 +116,7 @@ class CanvasLogic {
   }
 
   getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0) {
-    const maxWidth = ((this.width - (this.padding * 2) - this.gap) / 2) - (PADDING_CONTENT_HORIZONTAL * 2) - areaWidth
+    const maxWidth = this.getWidthInner() - (PADDING_CONTENT_HORIZONTAL * 2) - areaWidth
     let widthTemp = 0
     let totalText = []
     let totalHeight = 0
