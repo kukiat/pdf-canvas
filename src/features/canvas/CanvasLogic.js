@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { getHeigthFromRatio } from '../../libs/utils'
+import { getHeigthFromRatio, getWidthHeightText } from '../../libs/utils'
 import {
   FONT_FAMILY,
   HEADDER_HEIGHT,
@@ -143,30 +143,13 @@ class CanvasLogic {
     return this.position.get(id)[key]
   }
 
-  getHeightText(height) {
-    return height - (0.2 * height)
-  }
-
-  getWidthHeightText(size, label, weight) {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-
-    ctx.font = `${weight} ${size}px ${FONT_FAMILY}`
-    const width = ctx.measureText(label).width
-    canvas.remove()
-    return {
-      width,
-      height: this.getHeightText(size),
-    }
-  }
-
   getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0) {
     const maxWidth = ((this.width - (this.padding * 2) - this.gap) / 2) - (PADDING_CONTENT_HORIZONTAL * 2) - areaWidth
     let widthTemp = 0
     let totalText = []
     let totalHeight = 0
     textArr.forEach((text) => {
-      const { width, height } = this.getWidthHeightText(size, text, weight)
+      const { width, height } = getWidthHeightText(size, text, weight, FONT_FAMILY)
       widthTemp += width
       if (widthTemp > maxWidth) {
         totalHeight += fit
@@ -195,7 +178,7 @@ class CanvasLogic {
     let eachWidth = 0
     let currectLine = 0
     for (let word of text) {
-      const { width } = this.getWidthHeightText(size, word, weight)
+      const { width } = getWidthHeightText(size, word, weight, FONT_FAMILY)
       eachWidth += width
       newText[currectLine] += word
       if (eachWidth > maxWidth) {
@@ -257,7 +240,7 @@ class CanvasLogic {
     })
 
     const fontSizeOrderName = 22
-    const fontSizeTextOrderName = this.getWidthHeightText(fontSizeOrderName, order.orderName, 'bold')
+    const fontSizeTextOrderName = getWidthHeightText(fontSizeOrderName, order.orderName, 'bold', FONT_FAMILY)
     const paddingVerticalOrderName = BARCODE_HEIGHT + fontSizeTextOrderName.height + ((HEADDER_HEIGHT - fontSizeTextOrderName.height) / 2)
     const paddingHorizontalOrderName = ((leftAreaHeader - padding - fontSizeTextOrderName.width) / 2)
     this.updatePosition(order.id, {
@@ -271,7 +254,7 @@ class CanvasLogic {
     })
 
     const fontSizeOrderId = 16
-    const fontSizeTextOrderId = this.getWidthHeightText(fontSizeOrderId, order.orderId, 'bold')
+    const fontSizeTextOrderId = getWidthHeightText(fontSizeOrderId, order.orderId, 'bold', FONT_FAMILY)
     const paddingVerticalOrderIdText = ((HEADDER_HEIGHT / 2) - fontSizeTextOrderId.height) / 2
     const paddingHorizontalOrderId = (rightAreaHeader - padding - fontSizeTextOrderId.width) / 2
     this.updatePosition(order.id, {
@@ -286,7 +269,7 @@ class CanvasLogic {
 
     const fontSizeOrderPage = 14
     const orderPageText = `${Number(order.id) + 1} of ${orderList.length}`
-    const fontSizeTextOrderPage = this.getWidthHeightText(fontSizeOrderPage, orderPageText, 'normal')
+    const fontSizeTextOrderPage = getWidthHeightText(fontSizeOrderPage, orderPageText, 'normal', FONT_FAMILY)
     const paddingVerticalOrderPageText = ((HEADDER_HEIGHT / 2) - fontSizeTextOrderPage.height) / 2
     const paddingHorizontalOrderPage = (rightAreaHeader - padding - fontSizeTextOrderPage.width) / 2
     this.updatePosition(order.id, {
