@@ -5,19 +5,19 @@ export const orderList = [
     orderName: 'TX12005TH',
     orderId: 'OR014A',
     reciver: {
-      name: 'นายกู้เกียรติ วังทะพันธ์',
-      phoneNumber: '091-108-5517',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม จ.นนทบุรี 11000",
+      name: 'Curtis Vasquez',
+      phoneNumber: '087-223-4083',
+      address: "1546 Boki Circle, 862 Heole Manor, 566 Piwzoh Plaza, Lucoab, Georgia, SX",
     },
     sender: {
-      name: 'นายอดัม หำใหญ่',
-      phoneNumber: '091-108-5518',
-      address: "16/176 หมู่.8 อ.เมือง จ.นนทบุรี 11000",
+      name: 'Dean Willis',
+      phoneNumber: '088-912-2428',
+      address: "1777 Orodag Street, 758 Sata Place, 1983 Nomtup Manor, Nicgelo,Antigua & Barbuda, PK",
     },
     date: '16/01/1996 13:31',
     type: 'Envelop',
-    weight: '0.07 g',
-    eg: 'xxxxx xxxx xxxxx'
+    weight: '3.31 Kg',
+    eg: '9e2fc27e-9a0e-5c1d-807b-88be904c900b'
   },
   {
     id: '1',
@@ -25,19 +25,19 @@ export const orderList = [
     orderName: 'TX12005TH',
     orderId: 'OR014A',
     reciver: {
-      name: 'นายกู้เกียรติ วังทะพันธ์',
-      phoneNumber: '091-108-5517',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Carrie Robbins',
+      phoneNumber: '084-011-5931',
+      address: "1507 Gulop Drive, 863 Nokwu Point, 1762 Micpim River, Nuodjos, Cameroon, CN",
     },
     sender: {
-      name: 'นายอดัม หำใหญ่',
-      phoneNumber: '091-108-5518',
-      address: "16/176 หมู่.8 ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Lenora Mann',
+      phoneNumber: '088-199-4230',
+      address: "1960 Ovnu Parkway, 30 Butbos Way, 799 Neoz Point, Borbogfed,Cocos (Keeling) Islands, BY",
     },
     date: '16/01/1996 13:31',
     type: 'Envelop',
-    weight: '0.07 g',
-    eg: 'Job Server เอาไว้เรียกใช้ Jobs ตามเวลา'
+    weight: '4.35 Kg',
+    eg: '8297aa00-926f-574a-83b1-9c03e43747ef'
   },
   {
     id: '2',
@@ -45,19 +45,19 @@ export const orderList = [
     orderName: 'TX12005TH',
     orderId: 'OR014A',
     reciver: {
-      name: 'นายกู้เกียรติ วังทะพันธ์',
-      phoneNumber: '091-108-5517',
-      address: "16/176 หมู่.8 ซ.วัดกำแพง ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Brett Poole',
+      phoneNumber: '089-364-5156',
+      address: "1299 Fawav Manor, 1848 Uvabo Highway, 1402 Bacob View, Evoralko, Greece, TG",
     },
     sender: {
-      name: 'นายอดัม หำใหญ่',
-      phoneNumber: '091-108-5518',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม อ.เมือง จ.นนทบุรี 11000",
+      name: 'Allie Kelly',
+      phoneNumber: '084-044-7978',
+      address: "1727 Donvow Highway, 231 Cogal Pike, 810 Amode Terrace, Utuhnuw,Vietnam, GH",
     },
     date: '16/01/1996 13:31',
     type: 'Envelop',
-    weight: '0.07 g',
-    eg: 'xxxxx'
+    weight: '2.56 Kg',
+    eg: '50a89a76-7c7a-5215-82f2-9471ac2f55ff'
   },
   {
     id: '3',
@@ -65,19 +65,19 @@ export const orderList = [
     orderName: 'TX12005TH',
     orderId: 'OR014A',
     reciver: {
-      name: 'นายกู้เกียรติ วังทะพันธ์',
-      phoneNumber: '091-108-5517',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Nelle Blair',
+      phoneNumber: '081-690-7307',
+      address: "234 Komnud Pass, 594 Urfo Parkway, 954 Nicak Highway, Jukikpot, Azerbaijan, PT",
     },
     sender: {
-      name: 'นายอดัม หำใหญ่',
-      phoneNumber: '091-108-5518',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Seth Coleman',
+      phoneNumber: '089-222-4342',
+      address: "159 Poviv Path, 1208 Vawved Lane, 1388 Agova Boulevard, Keurehe,Niue, MC",
     },
     date: '16/01/1996 13:31',
     type: 'Envelop',
-    weight: '0.07 g',
-    eg: 'เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ เจอ Stack ที่ถูกใจหรือยัง เจอ Stack ที่ถูกใจหรือยังv เจอ Stack ที่ถูกใจหรือยัง เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ เจอ Stack ที่ถูกใจหรือยัง เจอ Stack ที่ถูกใจหรือยังv เจอ Stack ที่ถูกใจหรือยัง เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ เจอ Stack ที่ถูกใจหรือยัง เจอ Stack ที่ถูกใจหรือยังv เจอ Stack ที่ถูกใจหรือยัง เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ เจอ Stack ที่ถูกใจหรือยัง เจอ Stack ที่ถูกใจหรือยังv เจอ Stack ที่ถูกใจหรือยัง เป็นไงบ้างครับเพื่อนๆ เจอ Stack ที่ถูกใจหรือยัง ถ้ายังลองเข้าไปอ่าน Stack ที่น่าสนใจที่ https://stackshare.io/ หรือ Comment, Feedback ได้เลยครับ เจอ Stack ที่ถูกใจหรือยัง เจอ Stack ที่ถูกใจหรือยังv เจอ Stack ที่ถูกใจหรือยัง '
+    weight: '1.65 Kg',
+    eg: '4280e9f3-57df-5ed3-bf34-7b57c8a334d9'
   },
   {
     id: '4',
@@ -85,18 +85,18 @@ export const orderList = [
     orderName: 'TX12005TH',
     orderId: 'OR014A',
     reciver: {
-      name: 'นายกู้เกียรติ วังทะพันธ์',
-      phoneNumber: '091-108-5517',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี ",
+      name: 'Ricardo Huff',
+      phoneNumber: '088-004-1001',
+      address: "906 Tifno Place, 1480 Jarel Terrace, 882 Japuf Road, Iduimigaw, Bolivia, RW",
     },
     sender: {
-      name: 'นายอดัม หำใหญ่',
-      phoneNumber: '091-108-5518',
-      address: "16/176 หมู่.8 ถ.พิบูลสงคราม ต.บางเขน อ.เมือง จ.นนทบุรี 11000",
+      name: 'Elnora Payne',
+      phoneNumber: '089-761-1725',
+      address: "1911 Varap Square, 1543 Vuanu Pass, 1587 Comlud Glen, Hozifkip,Antarctica, CA",
     },
     date: '16/01/1996 13:31',
     type: 'Envelop',
-    weight: '0.07 g',
-    eg: 'wdadwadssdw'
+    weight: '4.0 Kg',
+    eg: '14b7b0d6-3590-5bd5-ab3d-a18de1abbbe9'
   },
 ]
