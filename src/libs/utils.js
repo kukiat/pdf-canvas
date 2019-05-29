@@ -22,41 +22,54 @@ export const getWidthHeightText = (size, label, weight, font) => {
   }
 }
 
-export const calculatePage = (position, maxHeight, startXLeft, startYRight) => {
-  let newPosition = []
-  let left = 0
-  let right = 0
-  let page = 1
-  const initX = p => maxHeight * (p - 1) + 10
+export const calculatePage = (positions, maxHeight, startXLeft, startYRight) => {
+  const getOrderNumber = index => (index % 6) + 1
+  let number = 0
 
-  for (let i = 0; i < position.length; i++) {
-    const height = position[i].height
-    if (left + height < maxHeight || right + height < maxHeight) {
-      if (left > right) {
-        newPosition.push({
-          startX: startYRight,
-          startY: initX(page) + right
-        })
-        right += height
-      } else {
-        newPosition.push({
-          startX: startXLeft,
-          startY: initX(page) + left
-        })
-        left += height
+  const newPosition = positions.map((position, index) => {
+    const height = position.height
+
+    switch (getOrderNumber(index)) {
+      case 1:
+        number += 1
+        return {
+          startX: 10,
+          startY: 10,
+          number
+        }
+      case 2: return {
+        startX: startYRight,
+        startY: 10,
+        number
       }
-    } else {
-      left = height
-      right = 0
-      page += 1
-      newPosition.push({
+      case 3: return {
         startX: 10,
-        startY: initX(page)
-      })
+        startY: height + 10,
+        number
+      }
+      case 4: return {
+        startX: startYRight,
+        startY: height + 10,
+        number
+      }
+      case 5: return {
+        startX: 10,
+        startY: (height * 2) + 10,
+        number
+      }
+      case 6: return {
+        startX: startYRight,
+        startY: (height * 2) + 10,
+        number
+      }
+      default: return {}
     }
-  }
+  })
+
+  console.log(newPosition);
+
   return {
-    page,
+    page: 1,
     newPosition
   }
 }
