@@ -25,11 +25,9 @@ class CanvasRenderer {
       width: QRCODE_WIDTH
     }
 
-    // console.log(order.sender.phoneNumber)
     qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {
       if (err) throw err
-      canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
-      this.div.insertBefore(canvas, this.div.lastChild)
+      this.ctx.drawImage(canvas, x, y)
     })
   }
 
@@ -37,21 +35,18 @@ class CanvasRenderer {
     const { x, y } = position['checkpointBarcode']
 
     const canvas = document.createElement('canvas')
-    canvas.setAttribute('id', `barcode${order.id}`)
-    canvas.style = `position:absolute;margin-top:${y}px;margin-left:${x}px`
-    this.div.insertBefore(canvas, this.div.lastChild)
-
-    JsBarcode(`#barcode${order.id}`, order.barcode, {
+    JsBarcode(canvas, order.barcode, {
       format: 'CODE128B',
       lineColor: '#000',
-      width: 1,
-      height: 35,
+      width: 1.3,
+      height: 40,
       displayValue: true,
       text: order.barcode,
-      fontSize: 12,
+      fontSize: 14,
       font: FONT_FAMILY,
-      textMargin: 5
+      textMargin: 7
     })
+    this.ctx.drawImage(canvas, x, y, 242, 72)
   }
 
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
