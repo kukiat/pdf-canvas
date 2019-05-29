@@ -17,14 +17,16 @@ class OrderPreview extends Component {
 
   draw() {
     this.canvasLogic.calculate(this.props.orderList)
-    const { width, height } = this.canvasLogic.getPageSize()
-    this.canvasRenderer.init(this.div, width, height)
-
+    this.canvasRenderer.init(this.div, this.canvasLogic.position, WIDTH)
+    let size = -1
     this.props.orderList.forEach(order => {
       const position = this.canvasLogic.getPosition(order.id)
-      this.canvasRenderer.drawContent(position)
-      this.canvasRenderer.drawBarcode(position, order)
-      this.canvasRenderer.drawQrcode(position, order)
+      if (position.startX === 10 && position.startY === 10) {
+        size++
+      }
+      this.canvasRenderer.drawContent(size, position)
+      this.canvasRenderer.drawBarcode(size, position, order)
+      this.canvasRenderer.drawQrcode(size, position, order)
     })
   }
 

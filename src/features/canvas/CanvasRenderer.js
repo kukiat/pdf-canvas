@@ -1,24 +1,41 @@
 import JsBarcode from 'jsbarcode'
 import qr from 'qrcode'
 import { FONT_FAMILY, QRCODE_WIDTH } from './config'
-import { getWidthHeightText } from '../../libs/utils'
+import { getWidthHeightText, getHeigthFromRatio } from '../../libs/utils'
 
 class CanvasRenderer {
   constructor() {
-    this.ctx = null
+    this.ctx = {}
     this.div = null
+    this.size = 1
   }
 
-  init(el, width, height) {
-    this.div = el
+  initCanvas(width, height) {
     const canvas = document.createElement('canvas')
-    el.appendChild(canvas)
-    this.ctx = canvas.getContext('2d')
-    this.ctx.canvas.width = width
-    this.ctx.canvas.height = height
+    this.div.appendChild(canvas)
+    const ctx = (this.ctx[this.size - 1] = canvas.getContext('2d'))
+    ctx.canvas.width = width
+    ctx.canvas.height = height
+    this.size++
   }
 
-  drawQrcode(position, order) {
+  init(el, position, width) {
+    this.div = el
+    const height = getHeigthFromRatio('a4')(width)
+    position.forEach(p => {
+      if (this.isInitCanvas(p.startX, p.startY, height)) {
+        this.initCanvas(width, height)
+      }
+    })
+  }
+
+  isInitCanvas(x, y, h) {
+    const isX = x === 10
+    const isY = Math.floor(y) === (this.size - 1) * Math.floor(h) + 10
+    return isX && isY
+  }
+
+  drawQrcode(size, position, order) {
     const { x, y } = position['checkpointQr']
     const options = {
       errorCorrectionLevel: 'H',
@@ -27,11 +44,11 @@ class CanvasRenderer {
 
     qr.toCanvas(order.sender.phoneNumber, options, (err, canvas) => {
       if (err) throw err
-      this.ctx.drawImage(canvas, x, y)
+      this.ctx[size].drawImage(canvas, x, y)
     })
   }
 
-  drawBarcode(position, order) {
+  drawBarcode(size, position, order) {
     const { x, y } = position['checkpointBarcode']
 
     const canvas = document.createElement('canvas')
@@ -46,7 +63,7 @@ class CanvasRenderer {
       font: FONT_FAMILY,
       textMargin: 7
     })
-    this.ctx.drawImage(canvas, x, y, 242, 72)
+    this.ctx[size].drawImage(canvas, x, y, 242, 72)
   }
 
   drawTextGroup(ctx, { fit, x, y, totalText, size, weight = 'normal' }) {
@@ -71,9 +88,9 @@ class CanvasRenderer {
     ctx.stroke()
   }
 
-  drawContent(position) {
-    const ctx = this.ctx
-
+  drawContent(key, position) {
+    console.log(key)
+    const ctx = this.ctx[key]
     this.drawLine(ctx, position['line1'])
     this.drawLine(ctx, position['line2'])
     this.drawLine(ctx, position['line3'])

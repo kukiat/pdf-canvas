@@ -98,13 +98,6 @@ class CanvasLogic {
     })
   }
 
-  getPageSize() {
-    return {
-      width: this.width,
-      height: getHeigthFromRatio('a4')(this.width) * this.page
-    }
-  }
-
   getPosition(id) {
     return this.position.get(id)
   }
