@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button } from '../../commons'
 import jsPDF from 'jspdf'
 import CanvasLogic from '../canvas/CanvasLogic'
 import CanvasRenderer from '../canvas/CanvasRenderer'
@@ -44,7 +45,9 @@ class OrderPreview extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.download}>download</button>
+        <div style={{ display: 'flex' }}>
+          <Button onClick={this.download} style={{ margin: '10px auto 10px auto' }}>download</Button>
+        </div>
         <div ref={node => (this.div = node)} />
       </div>
     )
