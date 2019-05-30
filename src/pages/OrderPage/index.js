@@ -28,14 +28,14 @@ class OrderPage extends Component {
           address: "16/176 หมู่.8 ถ.พิบูลสงคราม จ.นนทบุรี 11000",
         },
         sender: {
-          name: 'นายอดัม หำใหญ่',
+          name: 'นายอดัม พันธะเตชะเวทีกุล',
           phoneNumber: '091-108-5518',
-          address: "16/176 หมู่.8 อ.เมือง จ.นนทบุรี 11000",
+          address: "16/176 หมู่ 8 ซอยรัตนาธิเบต หมู่บ้านชาตรีพิเศก 3 เขตจตุจักร อ.จตุจักร จ.กรุงเทพมหานคร 11000",
         },
         date: '16/01/1996 13:31',
         type: 'Envelop',
         weight: '0.07 g',
-        eg: '555In the draw for the round of 16'
+        eg: 'In the draw for the round of 16'
       })
     })
   }
