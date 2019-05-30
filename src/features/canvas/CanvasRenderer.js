@@ -11,6 +11,7 @@ class CanvasRenderer {
   }
 
   initCanvas(width, height) {
+    console.log(this.size)
     const canvas = document.createElement('canvas')
     this.div.appendChild(canvas)
     const ctx = (this.ctx[this.size - 1] = canvas.getContext('2d'))

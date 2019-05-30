@@ -22,7 +22,7 @@ class OrderPreview extends Component {
     this.canvasRenderer.init(this.div, this.canvasLogic.position, WIDTH)
     this.props.orderList.forEach(order => {
       const position = this.canvasLogic.getPosition(order.id)
-      const page = position.pageNumber
+      const page = position.pageNumber - 1
       this.canvasRenderer.drawContent(page, position)
       this.canvasRenderer.drawBarcode(page, position, order)
       this.canvasRenderer.drawQrcode(page, position, order)

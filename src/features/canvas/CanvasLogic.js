@@ -82,7 +82,7 @@ class CanvasLogic {
         startY: p.startY
       })
     )
-
+    console.log(position)
     const maxHeight = getHeigthFromRatio('a4')(this.width)
     const startXLeft = this.padding
     const startXRight = this.padding + (this.width - this.gap) / 2
@@ -106,7 +106,7 @@ class CanvasLogic {
     return this.position.get(id)[key]
   }
 
-  getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0) {
+  getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0, limit = 1) {
     const maxWidth = this.getWidthInner() - PADDING_CONTENT_HORIZONTAL * 2 - areaWidth
     let widthTemp = 0
     let totalText = []
@@ -127,9 +127,11 @@ class CanvasLogic {
         }
       }
     })
+    console.log(totalText)
+    const result = totalText.slice(0, limit)
     return {
-      line: totalText.length,
-      totalText,
+      line: result.length,
+      totalText: result,
       width: maxWidth,
       height: totalHeight
     }
@@ -156,16 +158,30 @@ class CanvasLogic {
 
   calculate(orderList) {
     orderList.forEach(order => {
-      const { startX, startY } = this.getCurrentPosition()
-      this.calculateItem(order, { startX, startY }, orderList)
-    })
-    const newPosition = this.sortPage()
-    newPosition.forEach((p, index) => {
-      this.calculateItem(orderList[index], p, orderList)
+      this.calculateItem(order, orderList)
     })
   }
 
-  calculateItem(order, { startX, startY, number = 0 }, orderList) {
+  getStartXY(orderId) {
+    const id = Number(orderId)
+    const setXY = (x, y, n) => ({ startX: x, startY: y, number: Math.ceil((id + 1) / 4) })
+    switch (id % 4) {
+      case 0:
+        return setXY(10, 10, id % 4)
+      case 1:
+        return setXY(400, 10, id % 4)
+      case 2:
+        return setXY(10, 415.2, id % 4)
+      case 3:
+        return setXY(400, 415.2, id % 4)
+      default:
+        break
+    }
+  }
+
+  calculateItem(order, orderList) {
+    const { startX, startY, number } = this.getStartXY(order.id)
+    console.log(startX, startY)
     const padding = 10
     const width = this.getWidthInner()
 
@@ -250,20 +266,21 @@ class CanvasLogic {
     const startYContent = startY + BARCODE_HEIGHT + HEADDER_HEIGHT
     let heightContent = startYContent
 
-    const reciverNameText = [`ผู้รับ: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
-    const reciverNameSizeText = 12
-    const reciverNameFit = 20
-    const reciverNameDetails = this.getDetailsTextGroup(reciverNameText, reciverNameSizeText, 'bold', reciverNameFit)
+    const reciverNameText = [`ผู้รับ: ${order.reciver.name} T:${order.reciver.phoneNumber}`]
     heightContent += PADDING_CONTENT_VERTICAL
+    const recivedNameData = {
+      height: 9.6,
+      line: 1,
+      totalText: reciverNameText,
+      width: 360,
+      fit: 20,
+      x: startXContent,
+      y: heightContent,
+      size: 12,
+      weight: 'bold'
+    }
     this.updatePosition(order.id, {
-      reciverName: {
-        ...reciverNameDetails,
-        fit: reciverNameFit,
-        x: startXContent,
-        y: heightContent,
-        size: reciverNameSizeText,
-        weight: 'bold'
-      }
+      reciverName: recivedNameData
     })
 
     const reciverAddressText = order.reciver.address.split(' ')
@@ -273,39 +290,40 @@ class CanvasLogic {
       reciverAddressText,
       reciverAddressSizeText,
       'bold',
-      reciverAddressFit
+      reciverAddressFit,
+      0,
+      3
     )
-    heightContent += reciverNameDetails.height + 10
+    heightContent += recivedNameData.height + 10
+    const reciverAddressData = {
+      height: 45.6,
+      line: 3,
+      totalText: reciverAddressDetails.totalText,
+      width: 360,
+      fit: reciverAddressFit,
+      x: startXContent,
+      y: heightContent,
+      size: reciverAddressSizeText,
+      weight: 'bold'
+    }
     this.updatePosition(order.id, {
-      reciverAddress: {
-        ...reciverAddressDetails,
-        fit: reciverAddressFit,
-        x: startXContent,
-        y: heightContent,
-        size: reciverAddressSizeText,
-        weight: 'bold'
-      }
+      reciverAddress: reciverAddressData
     })
 
-    const senderNameText = [`ผู้ส่ง: ${order.reciver.name} `, `T: ${order.reciver.phoneNumber}`]
-    const senderNameSizeText = 10
-    const senderNameFit = 16
-    const senderNameDetails = this.getDetailsTextGroup(
-      senderNameText,
-      senderNameSizeText,
-      'normal',
-      senderNameFit,
-      QRCODE_WIDTH
-    )
-    heightContent += reciverAddressDetails.height + 20
+    const senderNameText = [`ผู้ส่ง: ${order.reciver.name} T: ${order.reciver.phoneNumber}`]
+    heightContent += reciverAddressData.height + 20
+    const senderNameData = {
+      height: 8,
+      width: 272,
+      totalText: senderNameText,
+      line: 1,
+      fit: 16,
+      x: startXContent,
+      y: heightContent,
+      size: 10
+    }
     this.updatePosition(order.id, {
-      senderName: {
-        ...senderNameDetails,
-        fit: senderNameFit,
-        x: startXContent,
-        y: heightContent,
-        size: senderNameSizeText
-      }
+      senderName: senderNameData
     })
 
     this.updatePosition(order.id, {
@@ -320,56 +338,61 @@ class CanvasLogic {
       senderAddressSizeText,
       'normal',
       senderAddressFit,
-      QRCODE_WIDTH
+      QRCODE_WIDTH,
+      3
     )
-    heightContent += senderNameDetails.height + 10
+    heightContent += senderNameData.height + 10
+    const senderAddressData = {
+      height: 40,
+      line: 3,
+      width: 272,
+      totalText: senderAddressDetails.totalText,
+      fit: senderAddressFit,
+      x: startXContent,
+      y: heightContent,
+      size: senderAddressSizeText
+    }
     this.updatePosition(order.id, {
-      senderAddress: {
-        ...senderAddressDetails,
-        fit: senderAddressFit,
-        x: startXContent,
-        y: heightContent,
-        size: senderAddressSizeText
-      }
+      senderAddress: senderAddressData
     })
 
-    const orderDetailsText = [`${order.date}, `, `${order.type}, `, `${order.weight}`]
-    const orderDetailsTextSize = 10
-    const orderDetailsFit = 16
-    const orderDetails = this.getDetailsTextGroup(
-      orderDetailsText,
-      orderDetailsTextSize,
-      'normal',
-      orderDetailsFit,
-      QRCODE_WIDTH
-    )
-    heightContent += senderAddressDetails.height + 20
+    const orderDetailsText = [`${order.date}, ${order.type}, ${order.weight}`]
+    heightContent += senderAddressData.height + 20
+    const orderDetailsData = {
+      height: 8,
+      width: 272,
+      totalText: orderDetailsText,
+      line: 1,
+      fit: 16,
+      x: startXContent,
+      y: heightContent,
+      size: 10
+    }
     this.updatePosition(order.id, {
-      orderDetails: {
-        ...orderDetails,
-        fit: orderDetailsFit,
-        x: startXContent,
-        y: heightContent,
-        size: orderDetailsTextSize
-      }
+      orderDetails: orderDetailsData
     })
 
     const orderEgTextSize = 10
     const orderEgFit = 16
     const textArr = this.splitLineText(`หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
-    const egDetails = this.getDetailsTextGroup(textArr, orderEgTextSize, 'normal', orderEgFit)
-    heightContent += orderDetails.height + 20
+    const egDetails = this.getDetailsTextGroup(textArr, orderEgTextSize, 'normal', orderEgFit, 0, 2)
+    heightContent += orderDetailsData.height + 20
+    console.log(egDetails)
+    const orderEgData = {
+      height: 24,
+      line: egDetails.line,
+      width: 360,
+      totalText: egDetails.totalText,
+      fit: orderEgFit,
+      x: startXContent,
+      y: heightContent,
+      size: orderEgTextSize
+    }
     this.updatePosition(order.id, {
-      orderEg: {
-        ...egDetails,
-        fit: orderEgFit,
-        x: startXContent,
-        y: heightContent,
-        size: orderEgTextSize
-      }
+      orderEg: orderEgData
     })
 
-    heightContent += egDetails.height + PADDING_CONTENT_VERTICAL
+    heightContent += orderEgData.height + PADDING_CONTENT_VERTICAL
 
     this.setCurrentSizePosition(heightContent)
 
