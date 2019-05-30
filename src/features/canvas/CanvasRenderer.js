@@ -22,7 +22,6 @@ class CanvasRenderer {
   init(el, position, width) {
     this.div = el
     const height = getHeigthFromRatio('a4')(width)
-    // console.log(position)
     position.forEach(p => {
       if (this.isInitCanvas(p.startX, p.startY, height)) {
         this.initCanvas(width, height)
@@ -31,10 +30,9 @@ class CanvasRenderer {
   }
 
   isInitCanvas(x, y, h) {
-    const isX = x === 10
-    const isY = y === 10
-    // console.log(x, y, h)
-    return isX && isY
+    const matchX = x === 10
+    const matchY = y === 10
+    return matchX && matchY
   }
 
   drawQrcode(size, position, order) {

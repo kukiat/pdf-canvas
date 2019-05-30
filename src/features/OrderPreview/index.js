@@ -34,7 +34,7 @@ class OrderPreview extends Component {
   download = () => {
     const pdf = new jsPDF('p', 'pt', 'a4')
     this.canvasRenderer.ctx.forEach(canvas => {
-      pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 35, 10)
+      pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 0, 0)
       pdf.addPage()
     })
 
