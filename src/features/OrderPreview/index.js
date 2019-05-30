@@ -34,9 +34,13 @@ class OrderPreview extends Component {
 
   download = () => {
     const pdf = new jsPDF('p', 'pt', 'a4')
-    this.canvasRenderer.ctx.forEach(canvas => {
+    this.canvasRenderer.ctx.forEach((canvas, pageIndex) => {
       pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 0, 0)
-      pdf.addPage()
+
+      const isNotLastPage = pageIndex < this.canvasRenderer.ctx.length - 1
+      if (isNotLastPage) {
+        pdf.addPage()
+      }
     })
 
     pdf.save('download.pdf')
