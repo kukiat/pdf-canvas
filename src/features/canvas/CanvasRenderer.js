@@ -10,23 +10,21 @@ class CanvasRenderer {
     this.size = 1
   }
 
-  initCanvas(width, height) {
+  initCanvas(width, height, i) {
     const canvas = document.createElement('canvas')
     this.div.appendChild(canvas)
-    const ctx = (this.ctx[this.size - 1] = canvas.getContext('2d'))
+    const ctx = (this.ctx[i] = canvas.getContext('2d'))
     ctx.canvas.width = width
     ctx.canvas.height = height
-    this.size++
   }
 
-  init(el, position, width) {
+  init(el, size, width) {
     this.div = el
+    console.log(size)
     const height = getHeigthFromRatio('a4')(width)
-    position.forEach(p => {
-      if (this.isInitCanvas(p.startX, p.startY, height)) {
-        this.initCanvas(width, height)
-      }
-    })
+    for (let i = 0; i < size; i++) {
+      this.initCanvas(width, height, i)
+    }
   }
 
   isInitCanvas(x, y, h) {

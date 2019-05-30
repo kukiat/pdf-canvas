@@ -16,6 +16,7 @@ class CanvasLogic {
     this.width = width
     this.padding = padding
     this.gap = gap
+    this.pageSize = 1
   }
 
   convertPositionBarCode(x, y) {
@@ -107,6 +108,7 @@ class CanvasLogic {
   }
 
   calculate(orderList) {
+    this.pageSize = Math.ceil(orderList.length / 4)
     orderList.forEach(order => {
       this.calculateItem(order, orderList)
     })

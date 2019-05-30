@@ -19,7 +19,7 @@ class OrderPreview extends Component {
 
   draw() {
     this.canvasLogic.calculate(this.props.orderList)
-    this.canvasRenderer.init(this.div, this.canvasLogic.position, WIDTH)
+    this.canvasRenderer.init(this.div, this.canvasLogic.pageSize, WIDTH)
     this.props.orderList.forEach(order => {
       const position = this.canvasLogic.getPosition(order.id)
       const page = position.pageNumber - 1
