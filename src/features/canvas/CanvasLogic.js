@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { getHeigthFromRatio, getWidthHeightText, calculatePage } from '../../libs/utils'
+import { getWidthHeightText } from '../../libs/utils'
 import {
   FONT_FAMILY,
   HEADDER_HEIGHT,
@@ -16,33 +16,6 @@ class CanvasLogic {
     this.width = width
     this.padding = padding
     this.gap = gap
-    this.left = 0
-    this.right = 0
-    this.currentSide = 'left'
-  }
-
-  changePosition() {
-    const side = this.left > this.right ? 'right' : 'left'
-    this.currentSide = side
-  }
-
-  setCurrentSizePosition(size) {
-    this[this.currentSide] = size
-  }
-
-  getCurrentPosition() {
-    this.changePosition()
-    if (this.currentSide === 'left') {
-      return {
-        startX: 0 + this.padding,
-        startY: this.padding + this.left
-      }
-    }
-    const area = (this.width - this.gap) / 2
-    return {
-      startX: area + this.padding,
-      startY: this.padding + this.right
-    }
   }
 
   convertPositionBarCode(x, y) {
@@ -73,37 +46,14 @@ class CanvasLogic {
     return (this.width - this.padding * 2 - this.gap) / 2
   }
 
-  sortPage() {
-    let position = []
-    this.position.forEach(p =>
-      position.push({
-        height: p.height,
-        startX: p.startX,
-        startY: p.startY
-      })
-    )
-    console.log(position)
-    const maxHeight = getHeigthFromRatio('a4')(this.width)
-    const startXLeft = this.padding
-    const startXRight = this.padding + (this.width - this.gap) / 2
-    const { page, newPosition } = calculatePage(position, maxHeight, startXLeft, startXRight)
-    this.page = page
-    return newPosition
-  }
-
   setPosition(id, data) {
     this.position.set(id, {
-      side: this.currentSide,
       ...data
     })
   }
 
   getPosition(id) {
     return this.position.get(id)
-  }
-
-  getPositionDetails(id, key) {
-    return this.position.get(id)[key]
   }
 
   getDetailsTextGroup(textArr, size, weight, fit = 0, areaWidth = 0, limit = 1) {
@@ -127,7 +77,7 @@ class CanvasLogic {
         }
       }
     })
-    console.log(totalText)
+
     const result = totalText.slice(0, limit)
     return {
       line: result.length,
@@ -392,8 +342,6 @@ class CanvasLogic {
     })
 
     heightContent += orderEgData.height + PADDING_CONTENT_VERTICAL
-
-    this.setCurrentSizePosition(heightContent)
 
     this.updatePosition(order.id, {
       lineTop: {
