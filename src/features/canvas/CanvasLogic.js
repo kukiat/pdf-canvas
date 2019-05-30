@@ -297,7 +297,7 @@ class CanvasLogic {
     heightContent += recivedNameData.height + 10
     const reciverAddressData = {
       height: 45.6,
-      line: 3,
+      line: reciverAddressDetails.line,
       totalText: reciverAddressDetails.totalText,
       width: 360,
       fit: reciverAddressFit,
@@ -344,7 +344,7 @@ class CanvasLogic {
     heightContent += senderNameData.height + 10
     const senderAddressData = {
       height: 40,
-      line: 3,
+      line: senderAddressDetails.line,
       width: 272,
       totalText: senderAddressDetails.totalText,
       fit: senderAddressFit,
@@ -377,7 +377,6 @@ class CanvasLogic {
     const textArr = this.splitLineText(`หมายเหตุ: ${order.eg}`, orderEgTextSize, orderEgFit, 'normal')
     const egDetails = this.getDetailsTextGroup(textArr, orderEgTextSize, 'normal', orderEgFit, 0, 2)
     heightContent += orderDetailsData.height + 20
-    console.log(egDetails)
     const orderEgData = {
       height: 24,
       line: egDetails.line,
