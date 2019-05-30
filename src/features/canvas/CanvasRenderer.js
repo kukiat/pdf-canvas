@@ -5,7 +5,7 @@ import { getWidthHeightText, getHeigthFromRatio } from '../../libs/utils'
 
 class CanvasRenderer {
   constructor() {
-    this.ctx = {}
+    this.ctx = []
     this.div = null
     this.size = 1
   }
@@ -22,6 +22,7 @@ class CanvasRenderer {
   init(el, position, width) {
     this.div = el
     const height = getHeigthFromRatio('a4')(width)
+    // console.log(position)
     position.forEach(p => {
       if (this.isInitCanvas(p.startX, p.startY, height)) {
         this.initCanvas(width, height)
@@ -31,7 +32,8 @@ class CanvasRenderer {
 
   isInitCanvas(x, y, h) {
     const isX = x === 10
-    const isY = Math.floor(y) === (this.size - 1) * Math.floor(h) + 10
+    const isY = y === 10
+    // console.log(x, y, h)
     return isX && isY
   }
 
@@ -52,6 +54,7 @@ class CanvasRenderer {
     const { x, y } = position['checkpointBarcode']
 
     const canvas = document.createElement('canvas')
+    canvas.style = 'border:0px;'
     JsBarcode(canvas, order.barcode, {
       format: 'CODE128B',
       lineColor: '#000',
@@ -89,7 +92,6 @@ class CanvasRenderer {
   }
 
   drawContent(key, position) {
-    console.log(key)
     const ctx = this.ctx[key]
     this.drawLine(ctx, position['line1'])
     this.drawLine(ctx, position['line2'])

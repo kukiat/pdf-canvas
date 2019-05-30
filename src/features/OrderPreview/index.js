@@ -20,31 +20,25 @@ class OrderPreview extends Component {
   draw() {
     this.canvasLogic.calculate(this.props.orderList)
     this.canvasRenderer.init(this.div, this.canvasLogic.position, WIDTH)
-    let size = -1
     this.props.orderList.forEach(order => {
       const position = this.canvasLogic.getPosition(order.id)
-      if (position.startX === 10 && position.startY === 10) {
-        size++
-      }
-      this.canvasRenderer.drawContent(size, position)
-      this.canvasRenderer.drawBarcode(size, position, order)
-      this.canvasRenderer.drawQrcode(size, position, order)
+      const page = position.pageNumber
+      this.canvasRenderer.drawContent(page, position)
+      this.canvasRenderer.drawBarcode(page, position, order)
+      this.canvasRenderer.drawQrcode(page, position, order)
     })
 
-    this.imageData = this.canvasRenderer.ctx.canvas.toDataURL()
+    // this.imageData = this.canvasRenderer.ctx.canvas.toDataURL()
   }
 
   download = () => {
-    const pdf = new jsPDF('p', 'pt', 'a4');
-    const pageHeight = pdf.internal.pageSize.height;
-    const canvases = [this.imageData, this.imageData, this.imageData]
-
-    canvases.forEach((imageData) => {
-      pdf.addImage(imageData, 'PNG', 35, 10);
-      pdf.addPage();
+    const pdf = new jsPDF('p', 'pt', 'a4')
+    this.canvasRenderer.ctx.forEach(canvas => {
+      pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 35, 10)
+      pdf.addPage()
     })
 
-    pdf.save('download.pdf');
+    pdf.save('download.pdf')
   }
 
   render() {

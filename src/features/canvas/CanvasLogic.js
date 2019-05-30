@@ -165,14 +165,14 @@ class CanvasLogic {
     })
   }
 
-  calculateItem(order, { startX, startY }, orderList) {
+  calculateItem(order, { startX, startY, number = 0 }, orderList) {
     const padding = 10
     const width = this.getWidthInner()
 
     const leftAreaHeader = Math.floor(0.65 * width)
     const rightAreaHeader = width - leftAreaHeader
     this.setPosition(order.id, { startX, startY })
-
+    this.updatePosition(order.id, { pageNumber: number })
     this.updatePosition(order.id, {
       line1: {
         startX: startX + padding,
