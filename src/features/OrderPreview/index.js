@@ -46,9 +46,9 @@ class OrderPreview extends Component {
     return (
       <div>
         <div style={{ display: 'flex' }}>
-          <Button onClick={this.download} style={{ margin: '10px auto 10px auto' }}>download</Button>
+          <Button onClick={this.download} style={{ margin: '20px auto 20px auto' }}>download</Button>
         </div>
-        <div ref={node => (this.div = node)} />
+        <div ref={node => (this.div = node)} style={{ display: 'flex', flexDirection: 'column' }} />
       </div>
     )
   }

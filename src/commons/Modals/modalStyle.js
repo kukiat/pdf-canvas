@@ -10,7 +10,7 @@ export default {
     right: '0',
     margin: '0 auto',
     padding: 0,
-    width: WIDTH,
+    width: WIDTH + 50,
     borderRadius: 3,
     border: 0
   }

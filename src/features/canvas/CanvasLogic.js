@@ -119,13 +119,13 @@ class CanvasLogic {
     const setXY = (x, y, n) => ({ startX: x, startY: y, number: Math.ceil((id + 1) / 4) })
     switch (id % 4) {
       case 0:
-        return setXY(10, 10, id % 4)
+        return setXY(10, 140, id % 4)
       case 1:
-        return setXY(400, 10, id % 4)
+        return setXY(400, 140, id % 4)
       case 2:
-        return setXY(10, 415.2, id % 4)
+        return setXY(10, 560, id % 4)
       case 3:
-        return setXY(400, 415.2, id % 4)
+        return setXY(400, 560, id % 4)
       default:
         break
     }
