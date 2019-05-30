@@ -235,7 +235,7 @@ class CanvasLogic {
       reciverName: recivedNameData
     })
 
-    const reciverAddressText = order.reciver.address.split(' ')
+    const reciverAddressText = order.reciver.address.replace(/ /g, '- ').split('-')
     const reciverAddressSizeText = 12
     const reciverAddressFit = 18
     const reciverAddressDetails = this.getDetailsTextGroup(
@@ -282,7 +282,7 @@ class CanvasLogic {
       checkpointQr: this.getCheckPointQr(startX, startY, heightContent - 10)
     })
 
-    const senderAddressText = order.sender.address.split(' ')
+    const senderAddressText = order.sender.address.replace(/ /g, '- ').split('-')
     const senderAddressSizeText = 10
     const senderAddressFit = 16
     const senderAddressDetails = this.getDetailsTextGroup(
