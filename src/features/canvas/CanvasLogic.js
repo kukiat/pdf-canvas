@@ -12,7 +12,6 @@ import {
 class CanvasLogic {
   constructor(width, padding, gap) {
     this.position = new Map()
-    this.page = 1
     this.width = width
     this.padding = padding
     this.gap = gap
@@ -21,7 +20,7 @@ class CanvasLogic {
 
   calculate(orderList) {
     this.pageSize = Math.ceil(orderList.length / 4)
-    orderList.forEach(order => {
+    orderList.forEach((order, index) => {
       this.calculateItem(order, orderList)
     })
   }
@@ -139,8 +138,15 @@ class CanvasLogic {
 
     const leftAreaHeader = Math.floor(0.65 * width)
     const rightAreaHeader = width - leftAreaHeader
+
     this.setPosition(order.id, { startX, startY })
+
+    this.updatePosition(order.id, {
+      checkpointBarcode: this.convertPositionBarCode(startX, startY)
+    })
+
     this.updatePosition(order.id, { pageNumber: number })
+
     this.updatePosition(order.id, {
       line1: {
         startX: startX + padding,
@@ -378,15 +384,6 @@ class CanvasLogic {
         endX: startX + width,
         endY: heightContent
       }
-    })
-
-    this.updatePosition(order.id, {
-      checkpointBarcode: this.convertPositionBarCode(startX, startY)
-    })
-
-    this.updatePosition(order.id, {
-      height: heightContent - startY + PADDING_CONTENT_VERTICAL,
-      width
     })
   }
 }
