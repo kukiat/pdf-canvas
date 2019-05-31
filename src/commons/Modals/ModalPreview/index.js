@@ -19,9 +19,7 @@ class ModalPreview extends Component {
           {/* <div className="modal-header" ref={node => this.test = node}>
             <b>พิมพ์ป้ายพัสดุ</b>
           </div> */}
-          <div className="modal-content">
-            <div>{this.props.children}</div>
-          </div>
+          <div className="modal-content">{this.props.children}</div>
           {/* <div className="modal-footer">
             <Button className="btn-footer" onClick={this.onDownload}>
               Download

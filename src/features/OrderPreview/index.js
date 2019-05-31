@@ -4,6 +4,7 @@ import jsPDF from 'jspdf'
 import CanvasLogic from '../canvas/CanvasLogic'
 import CanvasRenderer from '../canvas/CanvasRenderer'
 import { GAP, PADDING, WIDTH } from '../canvas/config'
+import './index.scss'
 
 class OrderPreview extends Component {
   constructor(props) {
@@ -28,8 +29,6 @@ class OrderPreview extends Component {
       this.canvasRenderer.drawBarcode(page, position, order)
       this.canvasRenderer.drawQrcode(page, position, order)
     })
-
-    // this.imageData = this.canvasRenderer.ctx.canvas.toDataURL()
   }
 
   download = () => {
@@ -37,23 +36,24 @@ class OrderPreview extends Component {
     this.canvasRenderer.ctx.forEach((canvas, pageIndex) => {
       pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 0, 0)
 
-      const isNotLastPage = pageIndex < this.canvasRenderer.ctx.length - 1
-      if (isNotLastPage) {
+      const isLastPage = pageIndex === this.canvasRenderer.ctx.length - 1
+      if (!isLastPage) {
         pdf.addPage()
       }
     })
-
     pdf.save('download.pdf')
   }
 
   render() {
     return (
-      <div>
+      <>
         <div style={{ display: 'flex' }}>
-          <Button onClick={this.download} style={{ margin: '20px auto 20px auto' }}>download</Button>
+          <Button onClick={this.download} className="download-btn">
+            download
+          </Button>
         </div>
         <div ref={node => (this.div = node)} style={{ display: 'flex', flexDirection: 'column' }} />
-      </div>
+      </>
     )
   }
 }

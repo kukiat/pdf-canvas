@@ -20,7 +20,6 @@ class CanvasRenderer {
 
   init(el, size, width) {
     this.div = el
-    console.log(size)
     const height = getHeigthFromRatio('a4')(width)
     for (let i = 0; i < size; i++) {
       this.initCanvas(width, height, i)

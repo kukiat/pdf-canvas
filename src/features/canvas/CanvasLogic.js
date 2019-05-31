@@ -133,7 +133,6 @@ class CanvasLogic {
 
   calculateItem(order, orderList) {
     const { startX, startY, number } = this.getStartXY(order.id)
-    console.log(startX, startY)
     const padding = 10
     const width = this.getWidthInner()
 
