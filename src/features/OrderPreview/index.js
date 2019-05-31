@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { Button } from '../../commons'
-import jsPDF from 'jspdf'
 import CanvasLogic from '../canvas/CanvasLogic'
 import CanvasRenderer from '../canvas/CanvasRenderer'
 import { GAP, PADDING, WIDTH } from '../canvas/config'
@@ -31,30 +29,8 @@ class OrderPreview extends Component {
     })
   }
 
-  download = () => {
-    const pdf = new jsPDF('p', 'pt', 'a4')
-    this.canvasRenderer.ctx.forEach((canvas, pageIndex) => {
-      pdf.addImage(canvas.canvas.toDataURL(), 'PNG', 0, 0)
-
-      const isLastPage = pageIndex === this.canvasRenderer.ctx.length - 1
-      if (!isLastPage) {
-        pdf.addPage()
-      }
-    })
-    pdf.save('download.pdf')
-  }
-
   render() {
-    return (
-      <>
-        <div style={{ display: 'flex' }}>
-          <Button onClick={this.download} className="download-btn">
-            download
-          </Button>
-        </div>
-        <div ref={node => (this.div = node)} style={{ display: 'flex', flexDirection: 'column' }} />
-      </>
-    )
+    return <div ref={node => (this.div = node)} />
   }
 }
 

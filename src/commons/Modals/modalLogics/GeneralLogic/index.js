@@ -1,6 +1,6 @@
 import { Component } from 'react'
 
-class ModalLogic extends Component {
+class GeneralLogic extends Component {
   state = {
     isOpen: false
   }
@@ -23,4 +23,4 @@ class ModalLogic extends Component {
     })
   }
 }
-export default ModalLogic
+export default GeneralLogic

@@ -3,22 +3,27 @@
   flex-direction: column;
 
   .modal-header {
-    overflow: hidden;
-    padding: 15px 20px;
-    border-bottom: 1px solid #dcdde1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    border-bottom: 1px solid #000;
 
-    b {
-      font-size: 22px;
-      color: #5c626e;
+    .btn-set-order-preview {
+      display: flex;
+      margin: 20px 0;
+      justify-content: space-around;
+
+      .download-btn {
+        height: 35px;
+        width: 200px
+      }
+
+      .print-btn {
+        height: 35px;
+        width: 200px
+      }
     }
   }
 
   .modal-content {
-    margin-bottom: 20px;
+    padding: 0 25px;
   }
 
   .modal-footer {
@@ -30,18 +35,6 @@
     .btn-footer {
       margin-right: 10px;
       width: 350px;
-    }
-  }
-}
-
-@media print {
-  .modal-container {
-    .modal-content {
-      width: 100%;
-    }
-
-    .modal-footer {
-      display: none;
     }
   }
 }

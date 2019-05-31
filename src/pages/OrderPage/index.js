@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { orderList } from './data'
-import { Button } from '../../commons'
 import { OrderPreview, OrderList } from '../../features'
-import { ModalPreview } from '../../commons'
-import withModal from '../../commons/hoc/withModal'
+import { ModalPreview, GeneralLogic, withModal, Button } from '../../commons'
+import { orderList } from './data'
 import './index.scss'
 
 class OrderPage extends Component {
@@ -25,12 +23,12 @@ class OrderPage extends Component {
         reciver: {
           name: 'นายกู้เกียรติ วังทะพันธ์',
           phoneNumber: '091-108-5517',
-          address: "16/176 หมู่.8 ถ.พิบูลสงคราม จ.นนทบุรี 11000",
+          address: '16/176 หมู่.8 ถ.พิบูลสงคราม จ.นนทบุรี 11000'
         },
         sender: {
           name: 'นายอดัม พันธะเตชะ',
           phoneNumber: '091-108-5518',
-          address: "16/176 หมู่ 8 ซอยรัตนาธิเบต หมู่บ้านชาตรีพิเศก 3 เขตจตุจักร อ.จตุจักร จ.กรุงเทพมหานคร 11000",
+          address: '16/176 หมู่ 8 ซอยรัตนาธิเบต หมู่บ้านชาตรีพิเศก 3 เขตจตุจักร อ.จตุจักร จ.กรุงเทพมหานคร 11000'
         },
         date: '16/01/1996 13:31',
         type: 'Envelop',
@@ -44,8 +42,8 @@ class OrderPage extends Component {
     const { orderList } = this.state
     const { modals } = this.props
     return (
-      <div className='order-page-container'>
-        <div className='button-set'>
+      <div className="order-page-container">
+        <div className="button-set">
           <Button onClick={this.onCreateOrder}>Add order</Button>
           <Button onClick={modals.previewOrder.onOpen}>Preview</Button>
         </div>
@@ -59,4 +57,6 @@ class OrderPage extends Component {
   }
 }
 
-export default withModal()(OrderPage)
+export default withModal({
+  previewOrder: <GeneralLogic />
+})(OrderPage)
