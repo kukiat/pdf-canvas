@@ -19,6 +19,31 @@ class CanvasLogic {
     this.pageSize = 1
   }
 
+  calculate(orderList) {
+    this.pageSize = Math.ceil(orderList.length / 4)
+    orderList.forEach(order => {
+      this.calculateItem(order, orderList)
+    })
+  }
+
+  getStartXY(orderId) {
+    const id = Number(orderId)
+    const setXY = (startX, startY) => ({ startX, startY, number: Math.ceil((id + 1) / 4) })
+
+    switch (id % 4) {
+      case 0:
+        return setXY(10, 140)
+      case 1:
+        return setXY(400, 140)
+      case 2:
+        return setXY(10, 560)
+      case 3:
+        return setXY(400, 560)
+      default:
+        return
+    }
+  }
+
   convertPositionBarCode(x, y) {
     const width = this.getWidthInner()
     return {
@@ -79,10 +104,10 @@ class CanvasLogic {
       }
     })
 
-    const result = totalText.slice(0, limit)
+    const totalTextLimit = totalText.slice(0, limit)
     return {
-      line: result.length,
-      totalText: result,
+      line: totalTextLimit.length,
+      totalText: totalTextLimit,
       width: maxWidth,
       height: totalHeight
     }
@@ -105,30 +130,6 @@ class CanvasLogic {
     }
 
     return newText
-  }
-
-  calculate(orderList) {
-    this.pageSize = Math.ceil(orderList.length / 4)
-    orderList.forEach(order => {
-      this.calculateItem(order, orderList)
-    })
-  }
-
-  getStartXY(orderId) {
-    const id = Number(orderId)
-    const setXY = (x, y, n) => ({ startX: x, startY: y, number: Math.ceil((id + 1) / 4) })
-    switch (id % 4) {
-      case 0:
-        return setXY(10, 140, id % 4)
-      case 1:
-        return setXY(400, 140, id % 4)
-      case 2:
-        return setXY(10, 560, id % 4)
-      case 3:
-        return setXY(400, 560, id % 4)
-      default:
-        break
-    }
   }
 
   calculateItem(order, orderList) {

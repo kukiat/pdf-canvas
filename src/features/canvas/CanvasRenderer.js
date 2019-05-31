@@ -7,7 +7,6 @@ class CanvasRenderer {
   constructor() {
     this.ctx = []
     this.div = null
-    this.size = 1
   }
 
   initCanvas(width, height, i) {
@@ -24,12 +23,6 @@ class CanvasRenderer {
     for (let i = 0; i < size; i++) {
       this.initCanvas(width, height, i)
     }
-  }
-
-  isInitCanvas(x, y, h) {
-    const matchX = x === 10
-    const matchY = y === 10
-    return matchX && matchY
   }
 
   drawQrcode(size, position, order) {
@@ -49,7 +42,6 @@ class CanvasRenderer {
     const { x, y } = position['checkpointBarcode']
 
     const canvas = document.createElement('canvas')
-    canvas.style = 'border:0px;'
     JsBarcode(canvas, order.barcode, {
       format: 'CODE128B',
       lineColor: '#000',
