@@ -22,7 +22,8 @@ $ pnpm add @banpudev/http-client
 
 ## Config
 config.ts
-```
+
+```tsx
 import { HttpClientFactory } from '@banpudev/http-client';
 import { getAccessToken } from '@banpudev/react-auth';
 
